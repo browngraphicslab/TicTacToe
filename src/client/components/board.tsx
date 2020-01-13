@@ -1,9 +1,9 @@
 import * as React from "react";
-import "./board.scss";
+import "../style/board.scss";
 import { observer } from "mobx-react";
 import Square from "./square";
-import { Identity, Location } from "./utilities";
-import { checkForEndConditions } from "./logic";
+import { Identity, Location } from "../logic/utilities";
+import { checkForEndConditions } from "../logic/analysis";
 
 export interface BoardProps {
     background: string;
