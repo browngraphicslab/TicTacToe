@@ -1,6 +1,3 @@
-/**
- * https://www.typescriptlang.org/docs/handbook/modules.html#import
- */
 import * as React from "react";
 import "../style/square.scss";
 import { observable, action } from "mobx";
@@ -18,24 +15,6 @@ const opacityValues = {
     activated: 1,
 };
 
-/**
- * One of the issues with plain JavaScript objects is that they can literally
- * hold anything. This is flexible, but it can be hard to know what to expect
- * when you're given an object without context, and can make it a lot easier
- * to accidentally pass in the wrong type (string[] vs string, for example).
- * 
- * Interfaces to the rescue!
- * 
- * These types are just contracts that say, hey, if you're an object of this type,
- * you should expect me to have the following keys that map to the values of the given
- * type. This is a simple example. You can define more generic maps like
- * 
- * interface NumberDictionary { [key: string]: number }
- * 
- * Take a look here for all the cool interfaces you can define!
- * 
- * https://www.typescriptlang.org/docs/handbook/interfaces.html
- */
 interface SquareProps {
     location: Location;
     notifyBoard(resolved: Identity, location: Location): void;
@@ -71,13 +50,7 @@ export default class Square extends React.Component<SquareProps> {
      * This decides what to show in the middle of the square, based
      * on the internal state specified by this.identity.
      * 
-     * This looks like a regular function, but note the 'get' before
-     * the name: this it's more like an instance variable on steriods!
-     * It's a getter, or an instance variable that uses some logic before
-     * returning the underlying value.
-     * 
-     * It's invoked by this.content, NOT this.content().
-     * https://www.typescriptlang.org/docs/handbook/classes.html#accessors
+     * Again, it is an accessor, not a proper function.
      */
     private get content() {
         const { identity } = this;
@@ -92,7 +65,7 @@ export default class Square extends React.Component<SquareProps> {
             <img
                 // here's how we hook into the css (scss) styling
                 // we've written: this "letter" string matches the
-                // css selector we're importing on line 2 from ./square.scss
+                // css selector we're importing on line 2 from ../style/square.scss
                 className={"letter"}
                 src={Utilities.src(`${identity}.png`)}
             />
