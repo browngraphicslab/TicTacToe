@@ -1,0 +1,19 @@
+.container {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    height: 100%;
+    width: 100%;
+
+    .board {
+        align-self: center;
+        
+        .row {
+            display: flex;
+            flex-direction: row;        
+        }
+
+    }
+
+}

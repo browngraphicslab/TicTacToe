@@ -1,8 +1,8 @@
 import * as React from "react";
-import "./board.scss";
+import "../style/square.scss";
 import { observable, action } from "mobx";
 import { observer } from "mobx-react";
-import { Identity, Location, Utilities } from "./utilities";
+import { Identity, Location, Utilities } from "../logic/utilities";
 
 export interface SquareProps {
     location: Location;
