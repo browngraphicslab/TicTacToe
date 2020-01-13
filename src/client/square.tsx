@@ -2,7 +2,7 @@ import * as React from "react";
 import "./board.scss";
 import { observable, action } from "mobx";
 import { observer } from "mobx-react";
-import { Identity, Location } from "./utilities";
+import { Identity, Location, Utilities } from "./utilities";
 
 export interface SquareProps {
     location: Location;
@@ -30,8 +30,21 @@ export default class Square extends React.Component<SquareProps> {
         }
     }
 
+    private get content() {
+        const { identity } = this;
+        if (identity === Identity.None) {
+            return (null);
+        }
+        return (
+            <img
+                className={"letter"}
+                src={Utilities.src(`${identity}.png`)}
+            />
+        );
+    }
+
     render() {
-        const { identity, opacity } = this;
+        const { opacity } = this;
         return (
             <div
                 className={"square"}
@@ -44,7 +57,7 @@ export default class Square extends React.Component<SquareProps> {
                 onPointerLeave={() => this.identity === Identity.None && (this.opacity = opacityValues.idle)}
                 style={{ opacity }}
             >
-                {identity === Identity.None ? (null) : <img src={`/images/${identity}.png`} className={"letter"}/>}
+                {this.content}
             </div>
         );
     }

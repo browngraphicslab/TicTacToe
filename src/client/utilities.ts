@@ -1,7 +1,11 @@
 export namespace Utilities {
 
-    export function url(target: string) {
-        return `url(images/${target})`;
+    export function url(image: string) {
+        return `url(images/${image})`;
+    }
+
+    export function src(image: string) {
+        return `/images/${image}`;
     }
 
 }

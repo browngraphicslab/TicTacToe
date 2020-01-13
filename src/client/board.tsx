@@ -33,7 +33,7 @@ export default class Board extends React.Component<BoardProps> {
         gameState[row][column] = identity;
 
         let winner: Identity;
-        if ((winner = checkForEndConditions(gameState, size)) !== Identity.None) {
+        if ((winner = checkForEndConditions(gameState)) !== Identity.None) {
             this.notifyPlayerEndGame(`Congratulations, Player ${winner.toUpperCase()}! You've won!`);
         } else if (this.elapsedMoves === this.maxMoveCount) {
             this.notifyPlayerEndGame("Well, it's a draw!");

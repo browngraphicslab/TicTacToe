@@ -1,7 +1,8 @@
 import { Identity } from "./utilities";
 
-export function checkForEndConditions(gameState: Identity[][], size: number) {
+export function checkForEndConditions(gameState: Identity[][]) {
     let winner: Identity
+    const size = gameState.length;
 
     // check rows
     for (let row = 0; row < size; row++) {
