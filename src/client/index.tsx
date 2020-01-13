@@ -1,6 +1,7 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
-import Board from "./components/board";
+// NOTE: change this import to "./stencil/components/board" *and re-run npm run make* to render your own code!
+import Board from "./stencil/components/board";
 
 /**
  * This is a React component, invoked by writing JSX. JSX is a superset
@@ -48,7 +49,7 @@ import Board from "./components/board";
  * Now take a look at board.tsx and square.tsx to dive deeper into examples of the structure, features and patterns
  * of React components.
  */
-const whatToRender = <Board size={3} background={"#000033"} />;
+const whatToRender = <Board />;
 
 /**
  * Unlike in a JQuery project, this line is the only time you should ever directly interact with the DOM. In your components,
