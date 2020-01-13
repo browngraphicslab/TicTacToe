@@ -73,8 +73,8 @@ export default class Square extends React.Component<SquareProps> {
     }
 
     render() {
-        // does this look odd? Fair enough! But it's actually one of my
-        // favorite features of JavaScript and, thus, TypeScript. It's called
+        // does this look odd? Fair enough! But it's actually an awesome
+        // feature of JavaScript and, thus, TypeScript. It's called
         // 'object destructuring syntax,' and is just a much cleaner way of saying
         // const opacity = this.opacity. It might seem small here, but with larger
         // objects, it can be quite handy.
@@ -89,8 +89,8 @@ export default class Square extends React.Component<SquareProps> {
                 // this is just the unintuitive built-in name for onRightClick()
                 onContextMenu={e => {
                     // some events have default behaviors built into the browser, like popping up a context
-                    // menu in this case. I don't want that to bother my user when he or she right clicks, so 
-                    // I can take the reference to the event object that I have, e, and tell it to prevent any
+                    // menu in this case. We don't want that to bother ours users when they right click, so 
+                    // we can take the reference to the event object that we have, e, and tell it to prevent any
                     // default behavior associated with its firing. Also, be sure to learn about its friend e.stopPropagation().
                     // https://medium.com/@jacobwarduk/how-to-correctly-use-preventdefault-stoppropagation-or-return-false-on-events-6c4e3f31aedb
                     e.preventDefault();

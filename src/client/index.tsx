@@ -22,8 +22,8 @@ import Board from "./components/board";
  * can write regular Typescript in both .ts and .tsx files.
  * For example, React Components are written in .tsx files, since they contain JSX, but you can (and should!) write
  * any additional Typescript logic in the bodies of your component classes, thus also within the .tsx file. As you'll
- * see later on in the project, however, I've also factored out a particularly long function into its own separate
- * logic.ts file, which I can import and use in my component's .tsx file.
+ * see later on in the project, however, we've also factored out a particularly long function into its own separate
+ * logic.ts file, which we can import and use in our component's .tsx file.
  * 
  * So here we have a simple Tic Tac Toe game.
  * 
@@ -34,13 +34,13 @@ import Board from "./components/board";
  * Board
  *  Square
  * 
- * In the render() method of my Board component, I've figured out a template detailing
- * what a board should look like. But what if I don't want to be locked into the conventional
- * 3 by 3 board? Do I have to hard-code everything into my component? No! The whole point of components
+ * In the render() method of our Board component, we've figured out a template detailing
+ * what a board should look like. But what if we don't want to be locked into the conventional
+ * 3 by 3 board? Do we have to hard-code everything into our component? No! The whole point of components
  * is that they are flexible, and react (seems like this word is coming up a lot!) to information around, or
  * more specifically, above them. Components receive this information from
  * their parents through readonly (for the component, not necessarily for the parent) 'props', or properties.
- * Here, I can tell my board how many squares it should render in each dimension by passing in the
+ * Here, we can tell our board how many squares it should render in each dimension by passing in the
  * number 3 as a size property.
  * 
  * Change it to 4 and rebuild to see the 4 by 4 board!

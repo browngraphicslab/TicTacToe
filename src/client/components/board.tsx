@@ -75,8 +75,8 @@ export default class Board extends React.Component<BoardProps> {
         // update the board state to reflect the move
         gameState[row][column] = identity;
 
-        // this is what's called an inner assignment: not only do I execute checkForEndCondition(gameState),
-        // I also assign the value it returns to 'winner' in one fell swoop, and then use that value
+        // this is what's called an inner assignment: not only do we execute checkForEndCondition(gameState),
+        // We also assign the value it returns to 'winner' in one fell swoop, and then use that value
         // when evaluating the comparison of identities
         let winner: Identity;
         if ((winner = checkForEndConditions(gameState)) !== Identity.None) {
