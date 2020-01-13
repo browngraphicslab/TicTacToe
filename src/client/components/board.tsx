@@ -129,6 +129,9 @@ export default class Board extends React.Component<BoardProps> {
                     // having a reusable component is handy here: we can give each one customized information, but
                     // each square will behave in almost identical ways.
                     <Square
+                        // here we have a sort of inversion of control, where we pass in a callback function as a property
+                        // and thus, we allow the child component to capture some of the parent's logic and call it on demand.
+                        // so here, individual squares are responsible of notifying the board that they've been clicked. 
                         notifyBoard={this.handleMove}
                         location={{ row, column }}
                     />
