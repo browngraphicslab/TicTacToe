@@ -1,4 +1,5 @@
-# NodeReactTypescriptStarter
+# Tic Tac Toe
+
 # CODE
 
 If you're a new applicant to the lab, start by focusing exclusively on
