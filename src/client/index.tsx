@@ -25,7 +25,11 @@ import Board from "./components/board";
  * see later on in the project, however, I've also factored out a particularly long function into its own separate
  * logic.ts file, which I can import and use in my component's .tsx file.
  * 
- * So here we have a simple Tic Tac Toe game with the following component hierarchy:
+ * So here we have a simple Tic Tac Toe game.
+ * 
+ * NOTE: To play as X, left click. To play as O, right click.
+ * 
+ * The project contains the following component hierarchy:
  * 
  * Board
  *  Square
