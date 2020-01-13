@@ -158,6 +158,13 @@ export default class Board extends React.Component<BoardProps> {
         return <div className={"board"}>{...board}</div>;
     }
 
+    /**
+     * This is where the magic happens: this is where React looks for you
+     * to tell it what to render. The return value is pure JSX, that superset of HTML.
+     * You can render HTML, or other custom sub-components, and pass in properties, react
+     * to events and much more!
+     * https://reactjs.org/docs/rendering-elements.html 
+     */
     render() {
         const { background } = this.props;
         return (

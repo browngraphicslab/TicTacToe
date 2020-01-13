@@ -72,14 +72,6 @@ export default class Square extends React.Component<SquareProps> {
         );
     }
 
-    /**
-     * This is where the magic happens: this is where React looks for you
-     * to tell it what to render. Unlike all the regular TypeScript so far
-     * in this file, the return value is pure JSX, that superset of HTML.
-     * You can render HTML, or other custom sub-components, and pass in properties, react
-     * to events and much more!
-     * https://reactjs.org/docs/rendering-elements.html 
-     */
     render() {
         // does this look odd? Fair enough! But it's actually one of my
         // favorite features of JavaScript and, thus, TypeScript. It's called

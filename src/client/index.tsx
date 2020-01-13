@@ -2,8 +2,6 @@ import * as React from "react";
 import * as ReactDOM from "react-dom";
 import Board from "./components/board";
 
-const whereToRender = document.getElementById("root");
-
 /**
  * This is a React component, invoked by writing JSX. JSX is a superset
  * of HTML, so it includes things like <div></div>, <img />, etc, but
@@ -42,8 +40,18 @@ const whereToRender = document.getElementById("root");
  * number 3 as a size property.
  * 
  * Change it to 4 and rebuild to see the 4 by 4 board!
+ * 
+ * Now take a look at board.tsx and square.tsx to dive deeper into examples of the structure, features and patterns
+ * of React components.
  */
 const whatToRender = <Board size={3} background={"#000033"} />;
+
+/**
+ * Unlike in a JQuery project, this line is the only time you should ever directly interact with the DOM. In your components,
+ * use React references instead, and only if you must.
+ * https://reactjs.org/docs/refs-and-the-dom.html
+ */
+const whereToRender = document.getElementById("root");
 
 /**
  * Think of this as an equivalent to launch(String[] argv) { ... } in Java. This is the
@@ -53,5 +61,7 @@ const whatToRender = <Board size={3} background={"#000033"} />;
  * the HTML being rendered on screen. But we're writing in React, not working directly with regular HTML
  * DOM elements...so how does the browser know how to take our components and add their output to
  * the DOM? This line right here.
+ * 
+ * https://reactjs.org/docs/react-dom.html#render 
  */
 ReactDOM.render(whatToRender, whereToRender);
