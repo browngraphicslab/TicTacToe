@@ -18,13 +18,43 @@ import { checkForEndConditions } from "../logic/analysis";
  * 
  * These types are just contracts that say, hey, if you're an object of this type,
  * you should expect me to have the following keys that map to the values of the given
- * type. This is a simple example. You can define more generic maps like
+ * type. This is a simple example. You can define more generic interfaces, and then use
+ * one in the definition of the other!
  * 
- * interface NumberDictionary { [key: string]: number }
+ * // defines a generic interface
+ * interface DataValue<T> {
+ *     value: T;
+ *     modifiedTime: number;
+ *     id: string;
+ * }
+ * 
+ * // uses the generic interface in the definition of another generic interface
+ * interface DataDictionary<T> {
+ *     [key: string]: DataValue<T>
+ * }
+ * 
+ * // and you can use it as follows...
+ * const dictionary: DataDictionary<string> = {}
+ * const id = "1234-5678-9102";
+ * const datum: DataElement<string> = {
+ *     value: "Hello World!",
+ *     modifiedTime: Date.now(),
+ *     id
+ * }
+ * dictionary[id] = datum;
+ * 
+ * ...
+ * 
+ * const retrieved = dictionary[id]
+ * console.log(retrieved.value) // outputs Hello World! 
  * 
  * Take a look here for all the cool interfaces you can define!
  * 
  * https://www.typescriptlang.org/docs/handbook/interfaces.html
+ * 
+ * Here, an interface is used to specify what types of properties
+ * the component should expect to receive, and thus what the parent needs
+ * to provide.
  */
 interface BoardProps {
     background: string;
