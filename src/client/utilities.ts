@@ -5,3 +5,14 @@ export namespace Utilities {
     }
 
 }
+
+export interface Location {
+    row: number;
+    column: number;
+}
+
+export enum Identity {
+    None = "none",
+    X = "x",
+    O = "o"
+}

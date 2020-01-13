@@ -12,8 +12,8 @@ server.use(express.static(static_path));
 
 console.log(`Server listening on port ${port}...`);
 
-server.get("/", (_req, res) => res.redirect("/logo"));
-server.get("/logo", (_req, res) => {
+server.get("/", (_req, res) => res.redirect("/tic-tac-toe"));
+server.get("/tic-tac-toe", (_req, res) => {
     res.sendFile(content_path);
 });
 
