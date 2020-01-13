@@ -2,6 +2,9 @@ import * as React from "react";
 import "../style/board.scss";
 import { observer } from "mobx-react";
 
+/**
+ * TODO: Define the properties your board will accept.
+ */
 interface BoardProps {
 }
 

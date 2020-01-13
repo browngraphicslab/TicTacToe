@@ -2,6 +2,9 @@ import * as React from "react";
 import "../style/square.scss";
 import { observer } from "mobx-react";
 
+/**
+ * TODO: Define the properties your square will accept.
+ */
 interface SquareProps {
 }
 
