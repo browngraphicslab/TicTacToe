@@ -5,12 +5,12 @@ import Square from "./square";
 import { Identity, Location } from "../logic/utilities";
 import { checkForEndConditions } from "../logic/analysis";
 
-export interface BoardProps {
+interface BoardProps {
     background: string;
     size: number;
 }
 
-@observer
+@observer // all components that we work with should be marked @observer so that they can React to mobx's state management
 export default class Board extends React.Component<BoardProps> {
     private gameState: Identity[][];
     private maxMoveCount: number;
@@ -28,7 +28,6 @@ export default class Board extends React.Component<BoardProps> {
     private handleMove = (identity: Identity, { row, column }: Location) => {
         this.elapsedMoves++
         const { gameState } = this;
-        const { size } = this.props;
         console.log(`Hey, square (${row}, ${column}) goes to Player ${identity.toUpperCase()}!`);
         gameState[row][column] = identity;
 
