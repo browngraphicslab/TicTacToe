@@ -1,32 +1,49 @@
 # Tic Tac Toe
 
-# CODE
+# Introduction
 
-If you're a new applicant to the lab, start by focusing exclusively on
-the files in ./src/client. Once you're super familiar with those, you can
-consider exploring the rest of the code base. Note that a lot of the configuration
-files in the root directory are not important to know at this point.
+Hello! These files are here to offer you a couple different resources. The directory `./src/client/solution` contains two different
+well-commented solution files to give you a complete walkthrough of one implementation of Tic Tac Toe. However, if you want to try it out on your own first, edit any and all of the files in `./src/client/stencil` (with outlines, imports and some function signatures already in place) to write your own implementation!
 
-.&emsp;&emsp;&emsp;&emsp;&emsp;1)  
-&emsp;./src&emsp;&emsp;&emsp;&emsp;all of your TypeScript source code lives  
-&emsp;./static&emsp;&emsp;&emsp;&emsp;Webpack will put the transpiled JavaScript output and copied assets here (images, etc.). Automatically populated, so you shouldn't need to touch it  
-&emsp;./node_modules&emsp;&emsp;&emsp;&emsp;running 'npm install' places  
+# Structure
+Here's a high level overview of the project's internal structure:
 
-1) the root of the project, direct children are mostly configuration files and this README
-2) 
+![Project Overview](/src/assets/images/overview.png)
 
-# GAME
+# Installation
 
 After cloning the repository, from the project root directory, run:
 
-npm install && npm run make
+`npm install && npm run make`
 
 Open up the browser, go to http://localhost:1050 and start playing!
 
-Instructions: Left click to place an X, and right click to place an O.
+ # Run the solutions:
+ 
+Run `npm run make` in the command line from the root folder of the project and go to http://localhost:1050/tic-tac-toe for the standard solution, or http://localhost:1050/tic-tac-toe/stateful for the slightly more complex version that talks to the server to store information across page refreshes.
 
-# EXTENSIONS
+# Run your implementation:
 
-If you're looking for a challenge, try forking the repository for yourself and implementing:
+After making your changes, you'll need to compile ([transpile](https://howtodoinjava.com/typescript/transpiler-vs-compiler/)) your code and start the server. Run `npm run make` in the command line from the root folder of the project and go to http://localhost:1050/tic-tac-toe/stencil. 
+
+Once you're super familiar with those, you can
+consider exploring the rest of the code base. Note that a lot of the configuration
+files in the root directory are not important to know at this point, but if you have the time,
+you're encouraged to get to know them on your own or to ask one of the team leads.
+
+# How to Play
+
+X is given the first move, and the game will internally keep track of turns. Click on the desired square to move, or
+drag the hand icon and drop it on the desired square.
+
+# Extension Challenges
+
+If you're looking for a challenge, try implementing:
 1) Undo / redo of moves
 2) Highlighting the winning row / column / diagonal
+3) Adding routes to the server to send and receive more information
+4) Swap out the database.json file for an actual MongoDB or Mongoose client
+
+# Bugs
+
+Please report any bugs to samwilkins333@gmail.com.
