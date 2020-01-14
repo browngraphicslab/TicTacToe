@@ -16,6 +16,12 @@ module.exports = {
     resolve: {
         extensions: ['.js', '.ts', '.tsx']
     },
+    node: {
+        console: true,
+        fs: 'empty',
+        net: 'empty',
+        tls: 'empty'
+    },
     plugins: [
         new Copy([
             { from: resolve(__dirname, "src/assets") , to: public }

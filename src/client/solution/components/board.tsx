@@ -7,8 +7,8 @@ import { observer } from "mobx-react";
 import Square from "./square";
 import { Identity, Location } from "../logic/utilities";
 import { checkForEndConditions } from "../logic/analysis";
-import { observable, action, runInAction } from "mobx";
-import { get, post } from "request-promise";
+import { observable, action, runInAction, IReactionDisposer, reaction } from "mobx";
+import * as request from "request-promise";
 
 /**
  * One of the issues with plain JavaScript objects is that they can literally
@@ -75,10 +75,27 @@ const database = `${window.location.origin}/dimensions`;
 export default class Board extends React.Component<BoardProps> {
     // these are instance variables, just like in Java (or any other major language)
     @observable private pixelSideLength = 500;
-    @observable private dimensions = 3;
+    @observable private _dimensions = 3;
+    @observable private opacity = 0;
+    private updateDimensionsDisposer: IReactionDisposer;
+
+    private get dimensions() {
+        return this._dimensions;
+    } 
+
+    private set dimensions(dimensions: number) {
+        runInAction(() => this._dimensions = dimensions);
+        request({
+            uri: database,
+            method: "POST",
+            body: { dimensions },
+            json: true
+        });
+    }
+
     private outerRef = React.createRef<HTMLDivElement>();
     private gameState: Identity[][];
-    private maxMoveCount: number;
+    private maxMoveCount = 0;
     private elapsedMoves = 0;
 
     // take a look at the object destructuring link in ./square.tsx at
@@ -87,13 +104,26 @@ export default class Board extends React.Component<BoardProps> {
         // if you explictly define a constructor in a subclass, the first line must be super(), and here, we must pass in our props to React.
         super(props);
         // build a 'size by size' matrix to model the state of the game board
-        this.gameState = Array<Array<Identity>>();
+        this.gameState = this.constructBoardLogic();
+        window.addEventListener("resize", this.resize);
+        this.updateDimensionsDisposer = reaction(
+            () => this._dimensions,
+            () => this.gameState = this.constructBoardLogic()
+        );
+    }
+
+    componentWillUnmount() {
+        this.updateDimensionsDisposer();
+    }
+
+    private constructBoardLogic = () => {
+        const outer = Array<Array<Identity>>();
         const { dimensions } = this;
         for (let row = 0; row < dimensions; row++) {
-            this.gameState.push(Array<Identity>(dimensions).fill(Identity.None));
+            outer.push(Array<Identity>(dimensions).fill(Identity.None));
         }
         this.maxMoveCount = dimensions * dimensions;
-        window.addEventListener("resize", this.resize);
+        return outer;
     }
 
     @action
@@ -106,7 +136,16 @@ export default class Board extends React.Component<BoardProps> {
     }
 
     componentDidMount() {
+        this.requestDimensions()
         this.resize();
+    }
+
+    private requestDimensions = async () => {
+        const { dimensions } = JSON.parse(await request(database));
+        runInAction(() => {
+            this.opacity = 1;
+            this.dimensions = dimensions;
+        });
     }
 
     /**
@@ -215,7 +254,8 @@ export default class Board extends React.Component<BoardProps> {
                 className={"board"}
                 style={{
                     width: length,
-                    height: length
+                    height: length,
+                    opacity: this.opacity
                 }}
             >{...board}</div>
         );
@@ -241,20 +281,14 @@ export default class Board extends React.Component<BoardProps> {
                     style={{ background }}
                 >
                 {/* rather than writing literal JSX, we can use an accessor or a function that *returns* JSX */}
-                    <div className={"bar left"}>
-
-                    </div>
                     {this.board}
-                    <div className={"bar right"}>
-                        
-                    </div>
                 </div>
                 <input
                     type={"range"}
                     min={3}
                     max={10} 
                     className={"slider"}
-                    onChange={e => this.dimensions = Number(e.target.value)}
+                    onChange={({ target: { value} }) => this.dimensions = Number(value)}
                     value={this.dimensions}
                 />
             </div>
