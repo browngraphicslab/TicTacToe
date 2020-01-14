@@ -5,7 +5,7 @@ import * as React from "react";
 import "../style/board.scss";
 import { observer } from "mobx-react";
 import Square from "./square";
-import { Identity, Location, Server } from "../logic/utilities";
+import { Identity, Location, src } from "../logic/utilities";
 import { checkForEndConditions } from "../logic/analysis";
 import { observable, action, runInAction, IReactionDisposer, reaction } from "mobx";
 
@@ -74,6 +74,9 @@ export default class Board extends React.Component<BoardProps> {
     @observable private pixelSideLength = 500;
     @observable private dimensions = 3;
     @observable private opacity = 0;
+    @observable private dragThumbX = 0;
+    @observable private dragThumbY = 0;
+    @observable private currentPlayer = Identity.X;
 
     private outerRef = React.createRef<HTMLDivElement>();
     private gameState: Identity[][];
@@ -119,17 +122,18 @@ export default class Board extends React.Component<BoardProps> {
      * associated with the move, as well as the identity of the player
      * that triggered it. 
      */
-    private handleMove = (identity: Identity, { row, column }: Location) => {
+    private handleMove = ({ row, column }: Location) => {
         this.elapsedMoves++
         const { gameState } = this;
         // if you want to see messages in the browser development console (super helpful for
         // debugging!), just drop a quick console.log. Note that the backticks, or ``, allow for
         // templating syntax (like a nicer version of Java's String.format())
         // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Template_literals
-        console.log(`Hey, square (${row}, ${column}) goes to Player ${identity.toUpperCase()}!`);
+        console.log(`Hey, square (${row}, ${column}) goes to Player ${this.currentPlayer.toUpperCase()}!`);
         
         // update the board state to reflect the move
-        gameState[row][column] = identity;
+        gameState[row][column] = this.currentPlayer;
+        this.currentPlayer = this.currentPlayer === Identity.X ? Identity.O : Identity.X;
 
         // this is what's called an inner assignment: not only do we execute checkForEndCondition(gameState),
         // we also assign the value it returns to 'winner' in one fell swoop, and then use that value
@@ -140,6 +144,23 @@ export default class Board extends React.Component<BoardProps> {
         } else if (this.elapsedMoves === this.maxMoveCount) {
             this.notifyPlayerEndGame("Well, it's a draw!");
         }
+    }
+
+    private startDrag = () => {
+        const onPointerMove = action((e: PointerEvent) => {
+            this.dragThumbX += e.movementX;
+            this.dragThumbY += e.movementY;
+        });
+        const onPointerUp = action((e: PointerEvent) => {
+            const [square] = document.elementsFromPoint(e.x, e.y).filter(element => element.className === "square");
+            square && square.dispatchEvent(new CustomEvent("play"))
+            window.removeEventListener("pointermove", onPointerMove);
+            window.removeEventListener("pointerup", onPointerUp);
+            this.dragThumbX = 0;
+            this.dragThumbY = 0;
+        });
+        window.addEventListener("pointermove", onPointerMove);
+        window.addEventListener("pointerup", onPointerUp);
     }
 
     /**
@@ -190,6 +211,7 @@ export default class Board extends React.Component<BoardProps> {
                             notifyBoard={this.handleMove}
                             location={{ row, column }}
                             pixelSideLength={(length - 5 * (dimensions * 2)) / dimensions}
+                            currentPlayer={this.currentPlayer}
                         />
                     );
                 }
@@ -247,6 +269,16 @@ export default class Board extends React.Component<BoardProps> {
                     style={{ background }}
                 >
                 {/* rather than writing literal JSX, we can use an accessor or a function that *returns* JSX */}
+                    <div
+                        onPointerDown={this.startDrag}
+                        className={"drag-source"}
+                        style={{ transform: `translate(${this.dragThumbX}px, ${this.dragThumbY}px)` }}
+                    >
+                        <img
+                            className={"drag-hand"}
+                            src={src("move.png")}
+                        />
+                    </div>
                     {this.board}
                 </div>
             </div>

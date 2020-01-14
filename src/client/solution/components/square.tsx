@@ -16,9 +16,10 @@ const opacityValues = {
 };
 
 interface SquareProps {
+    currentPlayer: Identity;
     pixelSideLength: number;
     location: Location;
-    notifyBoard(resolved: Identity, location: Location): void;
+    notifyBoard(location: Location): void;
 }
 
 @observer
@@ -38,13 +39,11 @@ export default class Square extends React.Component<SquareProps> {
      * https://mobx.js.org/refguide/action.html 
      */
     @action
-    private displayIdentity = (target: Identity) => {
-        if (this.identity === Identity.None) {
-            const { notifyBoard, location } = this.props;
-            this.identity = target;
-            this.opacity = opacityValues.activated;
-            notifyBoard(target, location);
-        }
+    private makeMove = () => {
+        const { notifyBoard, location, currentPlayer } = this.props;
+        this.identity = currentPlayer;
+        this.opacity = opacityValues.activated;
+        notifyBoard(location);
     }
 
     /**
@@ -90,10 +89,11 @@ export default class Square extends React.Component<SquareProps> {
         const { opacity } = this;
         return (
             <div
+                ref={e => e && e.addEventListener("play", this.makeMove)}
                 className={"square"}
                 // our first event! i.e. when this <div> is clicked, execute the following function
                 // https://reactjs.org/docs/handling-events.html 
-                onClick={() => this.displayIdentity(Identity.X)}
+                onClick={this.makeMove}
                 // this is just the unintuitive built-in name for onRightClick()
                 onContextMenu={e => {
                     // some events have default behaviors built into the browser, like popping up a context
@@ -102,7 +102,7 @@ export default class Square extends React.Component<SquareProps> {
                     // default behavior associated with its firing. Also, be sure to learn about its friend e.stopPropagation().
                     // https://medium.com/@jacobwarduk/how-to-correctly-use-preventdefault-stoppropagation-or-return-false-on-events-6c4e3f31aedb
                     e.preventDefault();
-                    this.displayIdentity(Identity.O)
+                    this.makeMove()
                 }}
                 // these are effectively the on / off hover events
                 // the syntax in these functions might be odd at first, but it's a one-lined

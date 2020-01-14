@@ -3,7 +3,7 @@ import * as request from "request-promise";
 const { origin } = window.location;
 
 export function url(target: string) {
-    return `url(images/${target})`;
+    return `url(/images/${target})`;
 }
 
 export function src(target: string) {
