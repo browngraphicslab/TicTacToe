@@ -1,7 +1,7 @@
 import * as express from "express";
 import * as bodyParser from "body-parser";
 import { resolve } from "path";
-import { readFileSync, writeFileSync, existsSync, unlinkSync } from "fs";
+import { readFileSync, writeFileSync, existsSync } from "fs";
 
 const defaultDimensions = 3;
 const port = 1050;
