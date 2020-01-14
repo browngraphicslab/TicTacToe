@@ -2,12 +2,12 @@
  * https://www.typescriptlang.org/docs/handbook/modules.html#import
  */
 import * as React from "react";
-import "../style/smart_board.scss";
+import "../style/stateful_board.scss";
 import { observer } from "mobx-react";
 import Square from "./square";
-import { Identity, Location, Server } from "../logic/utilities";
+import { Identity, Location, src, Server } from "../logic/utilities";
 import { checkForEndConditions } from "../logic/analysis";
-import { observable, action, runInAction, IReactionDisposer, reaction } from "mobx";
+import { observable, action, runInAction, reaction, IReactionDisposer } from "mobx";
 
 /**
  * One of the issues with plain JavaScript objects is that they can literally
@@ -57,7 +57,7 @@ import { observable, action, runInAction, IReactionDisposer, reaction } from "mo
  * the component should expect to receive, and thus what the parent needs
  * to provide.
  */
-interface SmartBoardProps {
+interface BoardProps {
     background: string;
 }
 
@@ -69,43 +69,41 @@ interface SmartBoardProps {
  * that once didn't have to observe observable variables now does, and isn't.
  */
 @observer
-export default class SmartBoard extends React.Component<SmartBoardProps> {
+export default class Board extends React.Component<BoardProps> {
     // these are instance variables, just like in Java (or any other major language)
     @observable private pixelSideLength = 500;
-    @observable private _dimensions = 3;
     @observable private opacity = 0;
-    private updateDimensionsDisposer: IReactionDisposer;
-
-    private get dimensions() {
-        return this._dimensions;
-    } 
-
-    private set dimensions(dimensions: number) {
-        runInAction(() => this._dimensions = dimensions);
-        Server.Post("/state", { dimensions });
-    }
+    @observable private dragThumbX = 0;
+    @observable private dragThumbY = 0;
+    @observable private currentPlayer = Identity.X;
+    @observable private _dimensions = 3;
+        private get dimensions() {
+            return this._dimensions;
+        } 
+    
+        private set dimensions(dimensions: number) {
+            runInAction(() => this._dimensions = dimensions);
+            Server.Post("/state", { dimensions });
+        }
 
     private outerRef = React.createRef<HTMLDivElement>();
     private gameState: Identity[][];
     private maxMoveCount = 0;
     private elapsedMoves = 0;
+    private dimensionUpdater: IReactionDisposer;
 
     // take a look at the object destructuring link in ./square.tsx at
     // the top of the render method to gain some insight onto this { size, ...remaining } syntax
-    constructor(props: SmartBoardProps) {
+    constructor(props: BoardProps) {
         // if you explictly define a constructor in a subclass, the first line must be super(), and here, we must pass in our props to React.
         super(props);
         // build a 'size by size' matrix to model the state of the game board
         this.gameState = this.constructBoardLogic();
         window.addEventListener("resize", this.resize);
-        this.updateDimensionsDisposer = reaction(
-            () => this._dimensions,
+        this.dimensionUpdater = reaction(
+            () => this.dimensions,
             () => this.gameState = this.constructBoardLogic()
-        );
-    }
-
-    componentWillUnmount() {
-        this.updateDimensionsDisposer();
+        )
     }
 
     private constructBoardLogic = () => {
@@ -128,16 +126,12 @@ export default class SmartBoard extends React.Component<SmartBoardProps> {
     }
 
     componentDidMount() {
-        this.requestDimensions()
+        this.requestDimensions();
         this.resize();
     }
-
-    private requestDimensions = async () => {
-        const { dimensions } = await Server.Get("/dimensions");
-        runInAction(() => {
-            this.opacity = 1;
-            this.dimensions = dimensions;
-        });
+    
+    componentWillUnmount() {
+        this.dimensionUpdater();
     }
 
     /**
@@ -145,17 +139,18 @@ export default class SmartBoard extends React.Component<SmartBoardProps> {
      * associated with the move, as well as the identity of the player
      * that triggered it. 
      */
-    private handleMove = (identity: Identity, { row, column }: Location) => {
+    private handleMove = ({ row, column }: Location) => {
         this.elapsedMoves++
         const { gameState } = this;
         // if you want to see messages in the browser development console (super helpful for
         // debugging!), just drop a quick console.log. Note that the backticks, or ``, allow for
         // templating syntax (like a nicer version of Java's String.format())
         // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Template_literals
-        console.log(`Hey, square (${row}, ${column}) goes to Player ${identity.toUpperCase()}!`);
+        console.log(`Hey, square (${row}, ${column}) goes to Player ${this.currentPlayer.toUpperCase()}!`);
         
         // update the board state to reflect the move
-        gameState[row][column] = identity;
+        gameState[row][column] = this.currentPlayer;
+        this.currentPlayer = this.currentPlayer === Identity.X ? Identity.O : Identity.X;
 
         // this is what's called an inner assignment: not only do we execute checkForEndCondition(gameState),
         // we also assign the value it returns to 'winner' in one fell swoop, and then use that value
@@ -168,6 +163,31 @@ export default class SmartBoard extends React.Component<SmartBoardProps> {
             this.notifyPlayerEndGame("Well, it's a draw!");
             Server.Post("/winner", { winner });
         }
+    }
+
+    private requestDimensions = async () => {
+        const { dimensions } = await Server.Get("/dimensions");
+        runInAction(() => {
+            this.opacity = 1;
+            this.dimensions = dimensions;
+        });    
+    }
+
+    private startDrag = () => {
+        const onPointerMove = action((e: PointerEvent) => {
+            this.dragThumbX += e.movementX;
+            this.dragThumbY += e.movementY;
+        });
+        const onPointerUp = action((e: PointerEvent) => {
+            const [square] = document.elementsFromPoint(e.x, e.y).filter(element => element.className === "square");
+            square && square.dispatchEvent(new CustomEvent("play"))
+            window.removeEventListener("pointermove", onPointerMove);
+            window.removeEventListener("pointerup", onPointerUp);
+            this.dragThumbX = 0;
+            this.dragThumbY = 0;
+        });
+        window.addEventListener("pointermove", onPointerMove);
+        window.addEventListener("pointerup", onPointerUp);
     }
 
     /**
@@ -218,6 +238,7 @@ export default class SmartBoard extends React.Component<SmartBoardProps> {
                             notifyBoard={this.handleMove}
                             location={{ row, column }}
                             pixelSideLength={(length - 5 * (dimensions * 2)) / dimensions}
+                            currentPlayer={this.currentPlayer}
                         />
                     );
                 }
@@ -272,12 +293,28 @@ export default class SmartBoard extends React.Component<SmartBoardProps> {
                     // we've written: this "cointainer" string matches the
                     // css selector we're importing on line 5 from ../style/board.scss
                     className={"board-container"}
-                    style={{ background }}
+                    style={{
+                        background,
+                        height: !this.elapsedMoves ? "calc(100% - 40px)" : "100%"
+                    }}
                 >
                 {/* rather than writing literal JSX, we can use an accessor or a function that *returns* JSX */}
+                    <div
+                        onPointerDown={this.startDrag}
+                        className={"drag-source"}
+                        style={{ transform: `translate(${this.dragThumbX}px, ${this.dragThumbY}px)` }}
+                    >
+                        <img
+                            className={"drag-hand"}
+                            src={src("move.png")}
+                        />
+                    </div>
                     {this.board}
                 </div>
                 <input
+                    style={{
+                        visibility: !this.elapsedMoves ? "visible" : "hidden"
+                    }}
                     type={"range"}
                     min={3}
                     max={10} 

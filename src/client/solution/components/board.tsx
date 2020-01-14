@@ -7,7 +7,7 @@ import { observer } from "mobx-react";
 import Square from "./square";
 import { Identity, Location, src } from "../logic/utilities";
 import { checkForEndConditions } from "../logic/analysis";
-import { observable, action, runInAction, IReactionDisposer, reaction } from "mobx";
+import { observable, action, runInAction } from "mobx";
 
 /**
  * One of the issues with plain JavaScript objects is that they can literally
