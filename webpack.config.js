@@ -5,13 +5,14 @@ const public = resolve(__dirname, "static");
 module.exports = {
     mode: 'production',
     entry: {
-        bundle: "./src/client/index.tsx"
+        solution_bundle: "./src/client/solution_index.tsx",
+        stencil_bundle: "./src/client/stencil_index.tsx",
+        smart_bundle: "./src/client/smart_index.tsx"
     },
     devtool: "source-map",
     output: {
-        filename: "bundle.js",
-        path: public,
-        publicPath: "/"
+        filename: "[name].js",
+        path: `${public}/bundles`,
     },
     resolve: {
         extensions: ['.js', '.ts', '.tsx']
