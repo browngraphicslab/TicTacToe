@@ -24,7 +24,7 @@ Run `npm run make` in the command line from the root folder of the project and g
 
 # Run your implementation:
 
-After making your changes, you'll need to compile ([transpile](https://howtodoinjava.com/typescript/transpiler-vs-compiler/)) your code and start the server. Run `npm run make` in the command line from the root folder of the project and go to http://localhost:1050/tic-tac-toe/stateful. 
+After making your changes, you'll need to compile ([transpile](https://howtodoinjava.com/typescript/transpiler-vs-compiler/)) your code and start the server. Run `npm run make` in the command line from the root folder of the project and go to http://localhost:1050/tic-tac-toe/stencil. 
 
 Once you're super familiar with those, you can
 consider exploring the rest of the code base. Note that a lot of the configuration
