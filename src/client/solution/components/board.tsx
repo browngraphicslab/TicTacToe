@@ -7,6 +7,8 @@ import { observer } from "mobx-react";
 import Square from "./square";
 import { Identity, Location } from "../logic/utilities";
 import { checkForEndConditions } from "../logic/analysis";
+import { observable, action, runInAction } from "mobx";
+import { get, post } from "request-promise";
 
 /**
  * One of the issues with plain JavaScript objects is that they can literally
@@ -58,8 +60,9 @@ import { checkForEndConditions } from "../logic/analysis";
  */
 interface BoardProps {
     background: string;
-    size: number;
 }
+
+const database = `${window.location.origin}/dimensions`;
 
 /**
  * All components that we work with should be marked @observer so that they can React to mobx's state management.
@@ -71,21 +74,39 @@ interface BoardProps {
 @observer
 export default class Board extends React.Component<BoardProps> {
     // these are instance variables, just like in Java (or any other major language)
+    @observable private pixelSideLength = 500;
+    @observable private dimensions = 3;
+    private outerRef = React.createRef<HTMLDivElement>();
     private gameState: Identity[][];
     private maxMoveCount: number;
     private elapsedMoves = 0;
 
     // take a look at the object destructuring link in ./square.tsx at
     // the top of the render method to gain some insight onto this { size, ...remaining } syntax
-    constructor({ size, ...remaining }: BoardProps) {
+    constructor(props: BoardProps) {
         // if you explictly define a constructor in a subclass, the first line must be super(), and here, we must pass in our props to React.
-        super({ size, ...remaining });
+        super(props);
         // build a 'size by size' matrix to model the state of the game board
         this.gameState = Array<Array<Identity>>();
-        for (let row = 0; row < size; row++) {
-            this.gameState.push(Array<Identity>(size).fill(Identity.None));
+        const { dimensions } = this;
+        for (let row = 0; row < dimensions; row++) {
+            this.gameState.push(Array<Identity>(dimensions).fill(Identity.None));
         }
-        this.maxMoveCount = size * size;
+        this.maxMoveCount = dimensions * dimensions;
+        window.addEventListener("resize", this.resize);
+    }
+
+    @action
+    private resize = () => {
+        const { current } = this.outerRef;
+        if (current) {
+            const { width, height } = current.getBoundingClientRect(); 
+            this.pixelSideLength = Math.min(width, height) - 100;
+        }
+    }
+
+    componentDidMount() {
+        this.resize();
     }
 
     /**
@@ -101,7 +122,7 @@ export default class Board extends React.Component<BoardProps> {
         // templating syntax (like a nicer version of Java's String.format())
         // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Template_literals
         console.log(`Hey, square (${row}, ${column}) goes to Player ${identity.toUpperCase()}!`);
-
+        
         // update the board state to reflect the move
         gameState[row][column] = identity;
 
@@ -145,29 +166,30 @@ export default class Board extends React.Component<BoardProps> {
      * https://www.typescriptlang.org/docs/handbook/classes.html#accessors
      */
     private get board() {
-        const { size } = this.props;
-        if (size < 3) {
-            return <h1>Your board must be at least 3 by 3 squares...</h1>
-        }
-        const board: JSX.Element[] = [];
-        for (let row = 0; row < size; row++) {
-            const rowContents: JSX.Element[] = [];
-            for (let column = 0; column < size; column++) {
-                rowContents.push(
-                    // note that you can write JSX literally outside of the render method (technically this is
-                    // fully within the render method since that's the only place it's called). You can see why
-                    // having a reusable component is handy here: we can give each one customized information, but
-                    // each square will behave in almost identical ways.
-                    <Square
-                        // here we have a sort of inversion of control, where we pass in a callback function as a property
-                        // and thus, we allow the child component to capture some of the parent's logic and call it on demand.
-                        // so here, individual squares are responsible of notifying the board that they've been clicked. 
-                        notifyBoard={this.handleMove}
-                        location={{ row, column }}
-                    />
-                );
+        const { dimensions, pixelSideLength: length } = this;
+        let board: JSX.Element[] = [<h1 className={"board-warning"}>Your board must be at least 3 by 3 squares...</h1>];
+        if (dimensions > 2) {
+            board = [];
+            for (let row = 0; row < dimensions; row++) {
+                const rowContents: JSX.Element[] = [];
+                for (let column = 0; column < dimensions; column++) {
+                    rowContents.push(
+                        // note that you can write JSX literally outside of the render method (technically this is
+                        // fully within the render method since that's the only place it's called). You can see why
+                        // having a reusable component is handy here: we can give each one customized information, but
+                        // each square will behave in almost identical ways.
+                        <Square
+                            // here we have a sort of inversion of control, where we pass in a callback function as a property
+                            // and thus, we allow the child component to capture some of the parent's logic and call it on demand.
+                            // so here, individual squares are responsible of notifying the board that they've been clicked. 
+                            notifyBoard={this.handleMove}
+                            location={{ row, column }}
+                            pixelSideLength={(length - 5 * (dimensions * 2)) / dimensions}
+                        />
+                    );
+                }
+                board.push(<div className={"board-row"}>{...rowContents}</div>);    
             }
-            board.push(<div className={"row"}>{...rowContents}</div>);    
         }
         // this final value has wrapped up the entire hierarchy (a 3 by 3 example is given):
         // <div class="board">
@@ -188,7 +210,15 @@ export default class Board extends React.Component<BoardProps> {
         //     </div>
         // </div>
         // note that this is NOT 
-        return <div className={"board"}>{...board}</div>;
+        return (
+            <div
+                className={"board"}
+                style={{
+                    width: length,
+                    height: length
+                }}
+            >{...board}</div>
+        );
     }
 
     /**
@@ -202,15 +232,31 @@ export default class Board extends React.Component<BoardProps> {
         const { background } = this.props;
         return (
             // literal JSX
-            <div
-                // here's how we hook into the css (scss) styling
-                // we've written: this "cointainer" string matches the
-                // css selector we're importing on line 5 from ../style/board.scss
-                className={"container"}
-                style={{ background }}
-            >
+            <div className={"outer"} ref={this.outerRef}>
+                <div
+                    // here's how we hook into the css (scss) styling
+                    // we've written: this "cointainer" string matches the
+                    // css selector we're importing on line 5 from ../style/board.scss
+                    className={"board-container"}
+                    style={{ background }}
+                >
                 {/* rather than writing literal JSX, we can use an accessor or a function that *returns* JSX */}
-                {this.board}
+                    <div className={"bar left"}>
+
+                    </div>
+                    {this.board}
+                    <div className={"bar right"}>
+                        
+                    </div>
+                </div>
+                <input
+                    type={"range"}
+                    min={3}
+                    max={10} 
+                    className={"slider"}
+                    onChange={e => this.dimensions = Number(e.target.value)}
+                    value={this.dimensions}
+                />
             </div>
         );
     }

@@ -1,7 +1,9 @@
 import * as express from "express";
 import { resolve } from "path";
+import { readFileSync, writeFileSync, existsSync } from "fs";
 
 const port = 1050;
+const database = `${__dirname}/dimensions.txt`;
 
 const static_path = resolve(__dirname, "../../static");
 const content_path = resolve(__dirname, "../../src/index.html");

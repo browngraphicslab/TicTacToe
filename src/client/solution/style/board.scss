@@ -3,22 +3,52 @@
 // note that the nesting structure does have meaning!
 // http://thesassway.com/beginner/the-inception-rule
 
-.container {
-    text-align: center;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    height: 100%;
+.outer {
     width: 100%;
+    height: 100%;
+    justify-content: center;
+    flex-direction: row;
+    display: flex;
+    text-align: center;
 
-    .board {
-        align-self: center;
+    .board-container {
+        text-align: center;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        height: calc(100% - 40px);
+        width: 100%;
+        position: absolute;
+        border: 1px solid red;
         
-        .row {
-            display: flex;
-            flex-direction: row;        
+        .board-warning {
+            color: white;
+            align-self: center;
         }
-
+        
+        .board {
+            transition: 0.5s opacity ease;
+            align-self: center;
+    
+            .board-row {
+                display: flex;
+                flex-direction: row;        
+            }
+    
+        }
+    
+    }
+    
+    .slider {
+        width: calc(100% - 40px);
+        height: 20px;
+        position: absolute;
+        margin: 0;
+        padding: 0;
+        background: red;
+        bottom: 10px;
+        border-radius: 20px;
+        align-self: center;
     }
 
 }

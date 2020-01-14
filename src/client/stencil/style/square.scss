@@ -1,8 +1,12 @@
-// Write your scss (css) for your <Square /> component here.
+// TODO: Write your scss (css) for your <Square /> component here.
 // Consider using flexbox for easy automatic vertical and horizontal
 // centering of your components.
 // https://www.w3schools.com/css/css3_flexbox.asp
 
 .square {
+    padding: 10px;
+    width: 100px;
+    height: 100px;
     background-color: white;
+    margin: 10px;
 }

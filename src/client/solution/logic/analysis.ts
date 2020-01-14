@@ -65,6 +65,6 @@ export function checkForEndConditions(gameState: Identity[][]) {
         }
     }
 
-    // no winners
+    // no winners from the move
     return Identity.None;
 } 

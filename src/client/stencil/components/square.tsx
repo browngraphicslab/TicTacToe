@@ -12,8 +12,8 @@ interface SquareProps {
 export default class Square extends React.Component<SquareProps> {
     /**
      * TODO: declare instance variables here (if / as needed).
-     * @observable private instanceVar1 = "changing me won't update my rendered value :("
-     * private instanceVar2 = "changing me will update my rendered value :)"
+     * @observable private instanceVar1 = "changing me will update my rendered value"
+     * private instanceVar2 = "changing me will NOT update my rendered value"
      */
 
 

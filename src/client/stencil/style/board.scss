@@ -1,8 +1,12 @@
-// Write your scss (css) for your <Board /> component here.
+// TODO: Write your scss (css) for your <Board /> component here.
 // Consider using flexbox for easy automatic vertical and horizontal
 // centering of your components.
 // https://www.w3schools.com/css/css3_flexbox.asp
 
 .board-container {
     background-color: blue;
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    padding: 10px;
 }

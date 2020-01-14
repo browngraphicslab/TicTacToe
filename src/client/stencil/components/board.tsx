@@ -1,6 +1,7 @@
 import * as React from "react";
 import "../style/board.scss";
 import { observer } from "mobx-react";
+import Square from "./square";
 
 /**
  * TODO: Define the properties your board will accept.
@@ -12,13 +13,14 @@ interface BoardProps {
 export default class Board extends React.Component<BoardProps> {
     /**
      * TODO: Declare instance variables here (if / as needed).
-     * @observable private instanceVar1 = "changing me won't update my rendered value :("
-     * private instanceVar2 = "changing me will update my rendered value :)"
+     * @observable private instanceVar1 = "changing me will update my rendered value"
+     * private instanceVar2 = "changing me will NOT update my rendered value"
      */
 
     /**
-     * TODO: Create a constructor that initializes a 2-dimensional matrix
+     * TODO: Create a constructor that initializes a 2-dimensional matrix (think an Array of Arrays)
      * to record game state and any other instance variables (if / as needed).
+     * https://reactjs.org/docs/react-component.html#constructor
      */
 
     /**
@@ -31,19 +33,17 @@ export default class Board extends React.Component<BoardProps> {
      */
 
     /**
-     * Implement a private accessor that programmatically builds the board
-     * (consider creating an n by n grid of <Square /> instances
-     * by building n rows (<div>'s) each containing n <Square />'s) and returns it
+     * TODO: Implement a private accessor that programmatically builds the board
+     * (consider replacing the single instance given with an n by n grid of <Square /> instances
+     * consisting of n rows (<div>'s) each containing n <Square />'s) and returns it
      * to the render() method.
-     * 
-     * You should not use just the <span> as given. It's a meaningless placeholder!
      */
     private get board() {
-        return <span style={{ backgroundColor: "white" }} >Hey, I should be a board!</span>;
+        return (<Square />);
     }
 
     /**
-     * Use render to display the board. The wrapper <div>
+     * TODO: Use render to display the board. The wrapper <div>
      * will be styled by a css selector by the same name in
      * ../../style/stencil/board.scss.
      */

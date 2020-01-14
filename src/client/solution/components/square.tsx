@@ -16,6 +16,7 @@ const opacityValues = {
 };
 
 interface SquareProps {
+    pixelSideLength: number;
     location: Location;
     notifyBoard(resolved: Identity, location: Location): void;
 }
@@ -53,6 +54,7 @@ export default class Square extends React.Component<SquareProps> {
      * Again, it is an accessor, not a proper function.
      */
     private get content() {
+        const { pixelSideLength: length } = this.props;
         const { identity } = this;
         if (identity === Identity.None) {
             // this null is technically JSX, and indicates that React should just
@@ -67,6 +69,10 @@ export default class Square extends React.Component<SquareProps> {
                 // we've written: this "letter" string matches the
                 // css selector we're importing on line 2 from ../style/square.scss
                 className={"letter"}
+                style={{
+                    width: length / 2,
+                    height: length / 2
+                }}
                 src={Utilities.src(`${identity}.png`)}
             />
         );
@@ -79,6 +85,7 @@ export default class Square extends React.Component<SquareProps> {
         // const opacity = this.opacity. It might seem small here, but with larger
         // objects, it can be quite handy.
         // https://codeburst.io/es6-destructuring-the-complete-guide-7f842d08b98f 
+        const { pixelSideLength: length } = this.props;
         const { opacity } = this;
         return (
             <div
@@ -108,7 +115,11 @@ export default class Square extends React.Component<SquareProps> {
                 // this line is telling the style property to take in an object whose key is 'opacity', and
                 // whose value is given by the local variable 'opacity' assigned on line 111. But, rather than writing
                 // style={{ opacity: opacity }}, TypeScript is smart enough to assign the variable with that name to that particular key.
-                style={{ opacity }}
+                style={{
+                    width: length,
+                    height: length,
+                    opacity
+                }}
             >
                 {this.content}
             </div>
