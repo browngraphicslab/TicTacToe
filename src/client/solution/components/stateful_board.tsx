@@ -82,7 +82,7 @@ export default class SmartBoard extends React.Component<SmartBoardProps> {
 
     private set dimensions(dimensions: number) {
         runInAction(() => this._dimensions = dimensions);
-        Server.Post("/dimensions", { dimensions });
+        Server.Post("/state", { dimensions });
     }
 
     private outerRef = React.createRef<HTMLDivElement>();
@@ -163,8 +163,10 @@ export default class SmartBoard extends React.Component<SmartBoardProps> {
         let winner: Identity;
         if ((winner = checkForEndConditions(gameState)) !== Identity.None) {
             this.notifyPlayerEndGame(`Congratulations, Player ${winner.toUpperCase()}! You've won!`);
+            Server.Post("/winner", { winner });
         } else if (this.elapsedMoves === this.maxMoveCount) {
             this.notifyPlayerEndGame("Well, it's a draw!");
+            Server.Post("/winner", { winner });
         }
     }
 

@@ -1,7 +1,7 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 // NOTE: change this import to "./stencil/components/board" *and re-run npm run make* to render your own code!
-import Board from "./solution/components/board";
+import Board from "../solution/components/board";
 // import SmartBoard from "./solution/components/smart_board";
 
 /**

@@ -2,12 +2,14 @@ const { resolve } = require("path");
 const Copy = require('copy-webpack-plugin');
 const public = resolve(__dirname, "static");
 
+const entry = version => `./src/client/entry/${version}.tsx`;
+
 module.exports = {
     mode: 'production',
     entry: {
-        solution_bundle: "./src/client/solution_index.tsx",
-        stencil_bundle: "./src/client/stencil_index.tsx",
-        smart_bundle: "./src/client/smart_index.tsx"
+        solution_bundle: entry("solution"),
+        stencil_bundle: entry("stencil"),
+        stateful_bundle: entry("stateful")
     },
     devtool: "source-map",
     output: {

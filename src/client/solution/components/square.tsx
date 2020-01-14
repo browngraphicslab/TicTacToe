@@ -2,7 +2,7 @@ import * as React from "react";
 import "../style/square.scss";
 import { observable, action } from "mobx";
 import { observer } from "mobx-react";
-import { Identity, Location, Utilities } from "../logic/utilities";
+import { Identity, Location, src } from "../logic/utilities";
 
 /**
  * Out here, we're in the module, where we can just
@@ -63,6 +63,7 @@ export default class Square extends React.Component<SquareProps> {
             // a blank board square).
             return (null);
         }
+        const squareLength = length / 2;
         return (
             <img
                 // here's how we hook into the css (scss) styling
@@ -70,10 +71,10 @@ export default class Square extends React.Component<SquareProps> {
                 // css selector we're importing on line 2 from ../style/square.scss
                 className={"letter"}
                 style={{
-                    width: length / 2,
-                    height: length / 2
+                    width: squareLength,
+                    height: squareLength
                 }}
-                src={Utilities.src(`${identity}.png`)}
+                src={src(`${identity}.png`)}
             />
         );
     }

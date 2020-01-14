@@ -1,4 +1,4 @@
-import Board from "./stencil/components/board";
+import Board from "../stencil/components/board";
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 
