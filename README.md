@@ -7,10 +7,13 @@ the files in ./src/client. Once you're super familiar with those, you can
 consider exploring the rest of the code base. Note that a lot of the configuration
 files in the root directory are not important to know at this point.
 
-.      &emsp;                     <== the root of the project, direct children are mostly configuration files and this README\n
+.&emsp&emsp&emsp&emsp&emsp1)
     ./src                   <== all of your TypeScript source code lives
     ./static                <== Webpack will put the transpiled JavaScript output and copied assets here (images, etc.). Automatically populated, so you shouldn't need to touch it
     ./node_modules          <== running 'npm install' places
+
+1) the root of the project, direct children are mostly configuration files and this README
+2) 
 
 # GAME
 
