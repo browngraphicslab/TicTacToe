@@ -30,3 +30,6 @@ Instructions: Left click to place an X, and right click to place an O.
 If you're looking for a challenge, try forking the repository for yourself and implementing:
 1) Undo / redo of moves
 2) Highlighting the winning row / column / diagonal
+
+
+![GitHub Logo](/images/logo.png)
