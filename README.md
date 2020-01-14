@@ -5,17 +5,6 @@
 Hello! These files are here to offer you a couple different resources. The directory ./src/client/solution contains two different
 well-commented solution files to give you a complete walkthrough of one implementation of Tic Tac Toe. However, if you want to try it out on your own first, edit any and all of the files in ./src/client/stencil (with outlines, imports and some function signatures already in place) to write your own implementation!
 
- # Run the solutions:
-Run 'npm run make' in the command line from the root folder of the project and go to http://localhost:1050/tic-tac-toe for the standard solution, or http://localhost:1050/tic-tac-toe/stateful for the slightly more complex version that talks to the server to store information across page refreshes.
-
-# Run your implementation:
-run 'npm run make' in the command line from the root folder of the project and go to http://localhost:1050/tic-tac-toe/stateful. 
-
-Once you're super familiar with those, you can
-consider exploring the rest of the code base. Note that a lot of the configuration
-files in the root directory are not important to know at this point, but if you have the time,
-you're encouraged to get to know them on your own or to ask one of the team leads.
-
 # Structure
 Here's a high level overview of the project's internal structure:
 
@@ -25,11 +14,24 @@ Here's a high level overview of the project's internal structure:
 
 After cloning the repository, from the project root directory, run:
 
-npm install && npm run make
+`npm install && npm run make`
 
 Open up the browser, go to http://localhost:1050 and start playing!
 
-# Instructions
+ # Run the solutions:
+ 
+Run `npm run make` in the command line from the root folder of the project and go to http://localhost:1050/tic-tac-toe for the standard solution, or http://localhost:1050/tic-tac-toe/stateful for the slightly more complex version that talks to the server to store information across page refreshes.
+
+# Run your implementation:
+
+After making your changes, you'll need to compile ([transpile](https://howtodoinjava.com/typescript/transpiler-vs-compiler/)) your code and start the server. Run `npm run make` in the command line from the root folder of the project and go to http://localhost:1050/tic-tac-toe/stateful. 
+
+Once you're super familiar with those, you can
+consider exploring the rest of the code base. Note that a lot of the configuration
+files in the root directory are not important to know at this point, but if you have the time,
+you're encouraged to get to know them on your own or to ask one of the team leads.
+
+# How to Play
 
 X is given the first move, and the game will internally keep track of turns. Click on the desired square to move, or
 drag the hand icon and drop it on the desired square.
