@@ -23,7 +23,7 @@ if (!existsSync(database)) {
 function cleanDatabase() {
     writeFileSync(database, JSON.stringify({
         dimensions: defaultDimensions,
-        record: {
+        recordedWins: {
             x: 0,
             o: 0,
             none: 0,
@@ -35,6 +35,10 @@ server.get("/", (_req, res) => {
     cleanDatabase();
     res.redirect("/tic-tac-toe")
 });
+
+function read() {
+    return JSON.parse(readFileSync(database, 'utf8'));
+}
 
 const fallback = "solution"; 
 server.get("/tic-tac-toe/:version?", (req, res) => {
@@ -50,6 +54,17 @@ server.get("/tic-tac-toe/:version?", (req, res) => {
     res.sendFile(path);
 });
 
+server.get("/tic-tac-toe/stateful/:action", (req, res) => {
+    const { action } = req.params;
+    switch (action) {
+        case "state":
+            return res.send(read());
+        case "clear":
+            cleanDatabase();
+            res.redirect("/tic-tac-toe/stateful");
+    }
+});
+
 /**
  * These are routers that allow the server to
  * retrieve and write out and store the dimensions
@@ -58,20 +73,20 @@ server.get("/tic-tac-toe/:version?", (req, res) => {
 
 // reads the stored dimensions
 server.get("/dimensions", (_req, res) => {
-    res.send({ dimensions: JSON.parse(readFileSync(database, 'utf8')).dimensions });
+    res.send({ dimensions: read().dimensions });
 });
 
 // writes the updated dimensions
 server.post("/state", (req, res) => {
-    writeFileSync(database, JSON.stringify({ ...JSON.parse(readFileSync(database, 'utf8')), ...req.body }));
+    writeFileSync(database, JSON.stringify({ ...read(), ...req.body }));
     res.send();
 });
 
 server.post("/winner", (req, res) => {
     const { winner } = req.body;
-    const state = JSON.parse(readFileSync(database, 'utf8'));
-    const total = Number(state.record[winner]);
-    state.record[winner] = total + 1;
+    const state = read();
+    const total = Number(state.recordedWins[winner]);
+    state.recordedWins[winner] = total + 1;
     writeFileSync(database, JSON.stringify(state));
     res.send();
 });

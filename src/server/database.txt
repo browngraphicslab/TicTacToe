@@ -1,1 +1,1 @@
-{"dimensions":5,"record":{"x":1,"o":1,"none":1}}
+{"dimensions":3,"recordedWins":{"x":0,"o":0,"none":0}}
