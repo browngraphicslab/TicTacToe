@@ -1,6 +1,6 @@
 # Tic Tac Toe
 
-# CODE
+# Introduction
 
 Hello! These files are here to offer you a couple different resources. The directory ./src/client/solution contains two different
 well-commented solution files to give you a complete walkthrough of one implementation of Tic Tac Toe. However, if you want to try it out on your own first, edit any and all of the files in ./src/client/stencil (with outlines, imports and some function signatures already in place) to write your own implementation!
@@ -16,11 +16,12 @@ consider exploring the rest of the code base. Note that a lot of the configurati
 files in the root directory are not important to know at this point, but if you have the time,
 you're encouraged to get to know them on your own or to ask one of the team leads.
 
+# Structure
 Here's a high level overview of the project's internal structure:
 
 ![Project Overview](/src/assets/images/overview.png)
 
-# GAME
+# Installation
 
 After cloning the repository, from the project root directory, run:
 
@@ -28,10 +29,19 @@ npm install && npm run make
 
 Open up the browser, go to http://localhost:1050 and start playing!
 
-Instructions: Left click to place an X, and right click to place an O.
+# Instructions
 
-# EXTENSIONS
+X is given the first move, and the game will internally keep track of turns. Click on the desired square to move, or
+drag the hand icon and drop it on the desired square.
 
-If you're looking for a challenge, try forking the repository for yourself and implementing:
+# Extension Challenges
+
+If you're looking for a challenge, try implementing:
 1) Undo / redo of moves
 2) Highlighting the winning row / column / diagonal
+3) Adding routes to the server to send and receive more information
+4) Swap out the database.json file for an actual MongoDB or Mongoose client
+
+# Bugs
+
+Please report any bugs to samwilkins333@gmail.com.
