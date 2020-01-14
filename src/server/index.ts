@@ -16,8 +16,6 @@ server.use(express.static(static_path));
 server.use(bodyParser.json({ limit: "10mb" }));
 server.use(bodyParser.urlencoded({ extended: true }));
 
-console.log(`Server listening on port ${port}...`);
-
 server.get("/dimensions", (_req, res) => {
     let dimensions: number;
     if (existsSync(database)) {
@@ -43,4 +41,4 @@ server.get("/tic-tac-toe", (_req, res) => {
     res.sendFile(content_path);
 });
 
-server.listen(port);
+server.listen(port, () => console.log(`Server listening on port ${port}...`));

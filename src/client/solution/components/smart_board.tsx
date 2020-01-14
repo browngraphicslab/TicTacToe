@@ -2,7 +2,7 @@
  * https://www.typescriptlang.org/docs/handbook/modules.html#import
  */
 import * as React from "react";
-import "../style/board.scss";
+import "../style/smart_board.scss";
 import { observer } from "mobx-react";
 import Square from "./square";
 import { Identity, Location, Server } from "../logic/utilities";
@@ -57,7 +57,7 @@ import { observable, action, runInAction, IReactionDisposer, reaction } from "mo
  * the component should expect to receive, and thus what the parent needs
  * to provide.
  */
-interface BoardProps {
+interface SmartBoardProps {
     background: string;
 }
 
@@ -69,11 +69,21 @@ interface BoardProps {
  * that once didn't have to observe observable variables now does, and isn't.
  */
 @observer
-export default class Board extends React.Component<BoardProps> {
+export default class SmartBoard extends React.Component<SmartBoardProps> {
     // these are instance variables, just like in Java (or any other major language)
     @observable private pixelSideLength = 500;
-    @observable private dimensions = 3;
+    @observable private _dimensions = 3;
     @observable private opacity = 0;
+    private updateDimensionsDisposer: IReactionDisposer;
+
+    private get dimensions() {
+        return this._dimensions;
+    } 
+
+    private set dimensions(dimensions: number) {
+        runInAction(() => this._dimensions = dimensions);
+        Server.Post("/dimensions", { dimensions });
+    }
 
     private outerRef = React.createRef<HTMLDivElement>();
     private gameState: Identity[][];
@@ -82,12 +92,20 @@ export default class Board extends React.Component<BoardProps> {
 
     // take a look at the object destructuring link in ./square.tsx at
     // the top of the render method to gain some insight onto this { size, ...remaining } syntax
-    constructor(props: BoardProps) {
+    constructor(props: SmartBoardProps) {
         // if you explictly define a constructor in a subclass, the first line must be super(), and here, we must pass in our props to React.
         super(props);
         // build a 'size by size' matrix to model the state of the game board
         this.gameState = this.constructBoardLogic();
         window.addEventListener("resize", this.resize);
+        this.updateDimensionsDisposer = reaction(
+            () => this._dimensions,
+            () => this.gameState = this.constructBoardLogic()
+        );
+    }
+
+    componentWillUnmount() {
+        this.updateDimensionsDisposer();
     }
 
     private constructBoardLogic = () => {
@@ -110,8 +128,16 @@ export default class Board extends React.Component<BoardProps> {
     }
 
     componentDidMount() {
+        this.requestDimensions()
         this.resize();
-        runInAction(() => this.opacity = 1);
+    }
+
+    private requestDimensions = async () => {
+        const { dimensions } = await Server.Get("/dimensions");
+        runInAction(() => {
+            this.opacity = 1;
+            this.dimensions = dimensions;
+        });
     }
 
     /**
@@ -249,6 +275,14 @@ export default class Board extends React.Component<BoardProps> {
                 {/* rather than writing literal JSX, we can use an accessor or a function that *returns* JSX */}
                     {this.board}
                 </div>
+                <input
+                    type={"range"}
+                    min={3}
+                    max={10} 
+                    className={"slider"}
+                    onChange={({ target: { value} }) => this.dimensions = Number(value)}
+                    value={this.dimensions}
+                />
             </div>
         );
     }
