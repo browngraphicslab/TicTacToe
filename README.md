@@ -2,8 +2,8 @@
 
 # Introduction
 
-Hello! These files are here to offer you a couple different resources. The directory ./src/client/solution contains two different
-well-commented solution files to give you a complete walkthrough of one implementation of Tic Tac Toe. However, if you want to try it out on your own first, edit any and all of the files in ./src/client/stencil (with outlines, imports and some function signatures already in place) to write your own implementation!
+Hello! These files are here to offer you a couple different resources. The directory `./src/client/solution` contains two different
+well-commented solution files to give you a complete walkthrough of one implementation of Tic Tac Toe. However, if you want to try it out on your own first, edit any and all of the files in `./src/client/stencil` (with outlines, imports and some function signatures already in place) to write your own implementation!
 
 # Structure
 Here's a high level overview of the project's internal structure:
