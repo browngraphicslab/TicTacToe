@@ -7,7 +7,7 @@ the files in ./src/client. Once you're super familiar with those, you can
 consider exploring the rest of the code base. Note that a lot of the configuration
 files in the root directory are not important to know at this point.
 
-![Project Overview](/src/assets/overview.png)
+![Project Overview](/src/assets/images/overview.png)
 
 # GAME
 
