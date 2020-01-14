@@ -5,7 +5,7 @@ import { readFileSync, writeFileSync, existsSync } from "fs";
 
 const defaultDimensions = 3;
 const port = 1050;
-const database = `${__dirname}/database.txt`; // not a real database :)
+const database = `${__dirname}/database.json`; // not a real database :)
 
 const static_path = resolve(__dirname, "../../static");
 const content_path = (version: string) => resolve(__dirname, `../../src/html/${version}.html`);

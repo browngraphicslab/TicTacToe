@@ -1,4 +1,4 @@
 node_modules
 package-lock.json
 static/
-src/server/database.txt
+src/server/database.json
