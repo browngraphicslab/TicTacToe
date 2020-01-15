@@ -127,7 +127,7 @@ export default class Board extends React.Component<BoardProps> {
         const { gameState } = this;
         // if you want to see messages in the browser development console (super helpful for
         // debugging!), just drop a quick console.log. Note that the backticks, or ``, allow for
-        // templating syntax (like a nicer version of Java's String.format())
+        // templating (also known as string interpolation) syntax (like a nicer version of Java's String.format())
         // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Template_literals
         console.log(`Hey, square (${row}, ${column}) goes to Player ${this.currentPlayer.toUpperCase()}!`);
         
