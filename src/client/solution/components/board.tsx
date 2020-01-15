@@ -5,7 +5,7 @@ import * as React from "react";
 import "../style/board.scss";
 import { observer } from "mobx-react";
 import Square from "./square";
-import { Identity, Location, src, Server } from "../logic/utilities";
+import { Identity, Location, src } from "../logic/utilities";
 import { checkForEndConditions } from "../logic/analysis";
 import { observable, action, reaction, IReactionDisposer, computed } from "mobx";
 
@@ -62,7 +62,10 @@ interface BoardProps {
     dimensions: number;
     opacity?: number;
     height?: string;
+    onGameEnd?: (winner: Identity) => any;
 }
+
+const squarePadding = 5;
 
 /**
  * All components that we work with should be marked @observer so that they can React to mobx's state management.
@@ -74,19 +77,20 @@ interface BoardProps {
 @observer
 export default class Board extends React.Component<BoardProps> {
     // these are instance variables, just like in Java (or any other major language)
-    @observable private pixelSideLength = 500;
-    @observable private dragThumbX = 0;
-    @observable private dragThumbY = 0;
-    @observable private currentPlayer = Identity.X;
     @observable private elapsedMoves = 0;
+    @observable private dragTargetX = 0;
+    @observable private dragTargetY = 0;
+    @observable private currentPlayer = Identity.X;
+    @observable private pixelSideLength?: number;
 
     private containerRef = React.createRef<HTMLDivElement>();
     private gameState: Identity[][];
     private maxMoveCount = 0;
     private dimensionUpdateDisposer: IReactionDisposer;
+    private isGameOver = false;
 
     @computed
-    public get gameStarted() {
+    public get hasGameStarted() {
         return this.elapsedMoves > 0;
     }
 
@@ -135,7 +139,8 @@ export default class Board extends React.Component<BoardProps> {
         const { current } = this.containerRef;
         if (current) {
             const { width, height } = current.getBoundingClientRect();
-            this.pixelSideLength = Math.min(width, height) - 100;
+            this.pixelSideLength = Math.min(width - 200, height - 100);
+            console.log(this.pixelSideLength);
         }
     }
 
@@ -159,6 +164,9 @@ export default class Board extends React.Component<BoardProps> {
      * that triggered it. 
      */
     private handleMove = ({ row, column }: Location) => {
+        if (this.isGameOver) {
+            return;
+        }
         this.elapsedMoves++
         const { gameState } = this;
         // if you want to see messages in the browser development console (super helpful for
@@ -183,19 +191,19 @@ export default class Board extends React.Component<BoardProps> {
     }
 
     @action
-    private onPointerMove = (e: PointerEvent) => {
-        this.dragThumbX += e.movementX;
-        this.dragThumbY += e.movementY;
+    private onPointerMove = ({ movementX, movementY }: PointerEvent) => {
+        this.dragTargetX += movementX;
+        this.dragTargetY += movementY;
     };
 
     @action
-    private onPointerUp = (e: PointerEvent) => {
-        const [square] = document.elementsFromPoint(e.x, e.y).filter(element => element.className === "square");
+    private onPointerUp = ({ x, y }: PointerEvent) => {
+        const [square] = document.elementsFromPoint(x, y).filter(element => element.className === "square");
         square && square.dispatchEvent(new CustomEvent("play"))
         window.removeEventListener("pointermove", this.onPointerMove);
         window.removeEventListener("pointerup", this.onPointerUp);
-        this.dragThumbX = 0;
-        this.dragThumbY = 0;
+        this.dragTargetX = 0;
+        this.dragTargetY = 0;
     };
 
     private startDrag = () => {
@@ -203,6 +211,16 @@ export default class Board extends React.Component<BoardProps> {
         window.removeEventListener("pointerup", this.onPointerUp);
         window.addEventListener("pointermove", this.onPointerMove);
         window.addEventListener("pointerup", this.onPointerUp);
+    }
+
+    @computed
+    private get squareSideLength() {
+        const { dimensions } = this.props;
+        const { pixelSideLength: length } = this;
+        if (!length) {
+            return 0
+        }
+        return (length - squarePadding * (dimensions * 2)) / dimensions;
     }
 
     /**
@@ -216,6 +234,7 @@ export default class Board extends React.Component<BoardProps> {
      * https://developer.mozilla.org/en-US/docs/Web/API/Window/alert 
      */
     private notifyPlayerEndGame = (winner: Identity) => {
+        this.isGameOver = true;
         let message: string;
         switch (winner) {
             case Identity.X:
@@ -226,7 +245,8 @@ export default class Board extends React.Component<BoardProps> {
             default:
                 message = "Well, it's a draw!";
         }
-        Server.Post("/winner", { winner });
+        const { onGameEnd } = this.props;
+        onGameEnd && onGameEnd(winner);
         setTimeout(() => {
             alert(message);
             window.location.reload(); // you can programmatically refresh the page (to reset the game state) - cool!
@@ -246,10 +266,11 @@ export default class Board extends React.Component<BoardProps> {
      */
     @computed
     private get board() {
-        const { pixelSideLength: length } = this;
         const { dimensions } = this.props;
-        let board: JSX.Element[] = [<h1 className={"board-warning"}>Your board must be at least 3 by 3 squares...</h1>];
-        if (dimensions > 2) {
+        const { pixelSideLength: length } = this;
+        const valid = dimensions > 2
+        let board: JSX.Element[] = [<h1 className={"board-warning passive"}>Your board must be at least 3 by 3 squares...</h1>];
+        if (valid) {
             board = [];
             for (let row = 0; row < dimensions; row++) {
                 const rowContents: JSX.Element[] = [];
@@ -265,7 +286,7 @@ export default class Board extends React.Component<BoardProps> {
                             // so here, individual squares are responsible of notifying the board that they've been clicked. 
                             notifyBoard={this.handleMove}
                             location={{ row, column }}
-                            pixelSideLength={(length - 5 * (dimensions * 2)) / dimensions}
+                            pixelSideLength={this.squareSideLength}
                             currentPlayer={this.currentPlayer}
                         />
                     );
@@ -279,7 +300,8 @@ export default class Board extends React.Component<BoardProps> {
                 style={{
                     width: length,
                     height: length,
-                    opacity: this.opacity
+                    opacity: this.opacity,
+                    display: valid ? "block" : "flex"
                 }}
             >{...board}</div>
         );
@@ -290,10 +312,10 @@ export default class Board extends React.Component<BoardProps> {
             <div
                 onPointerDown={this.startDrag}
                 className={"drag-target"}
-                style={{ transform: `translate(${this.dragThumbX}px, ${this.dragThumbY}px)` }}
+                style={{ transform: `translate(${this.dragTargetX}px, ${this.dragTargetY}px)` }}
             >
                 <img
-                    className={"drag-hand"}
+                    className={"drag-hand passive"}
                     src={src("move.png")}
                 />
             </div>
@@ -315,7 +337,7 @@ export default class Board extends React.Component<BoardProps> {
                 ref={this.containerRef}
                 // here's how we hook into the static css (scss) style sheets
                 // we've written: this "board-cointainer" string matches the
-                // css selector we're importingfrom ../style/stateful-board.scss
+                // css selector we're importingfrom ../style/advanced-board.scss
                 className={"board-container"}
                 // but, for values that need to be changed dynamically based on
                 // logic in these component files, we can also update the style

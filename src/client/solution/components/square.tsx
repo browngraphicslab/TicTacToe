@@ -70,7 +70,7 @@ export default class Square extends React.Component<SquareProps> {
                 // here's how we hook into the css (scss) styling
                 // we've written: this "letter" string matches the
                 // css selector we're importing on line 2 from ../style/square.scss
-                className={"letter"}
+                className={"letter passive"}
                 style={{
                     width: squareLength,
                     height: squareLength

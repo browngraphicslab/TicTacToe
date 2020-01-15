@@ -3,6 +3,12 @@
 // note that the nesting structure does have meaning!
 // http://thesassway.com/beginner/the-inception-rule
 
+.passive {
+    -webkit-user-select: none; /* Chrome/Safari */        
+    -moz-user-select: none; /* Firefox */
+    -ms-user-select: none; /* IE10+ */
+}
+
 .board-container {
     text-align: center;
     display: flex;
@@ -16,6 +22,8 @@
     .board {
         transition: 0.5s opacity ease;
         align-self: center;
+        justify-content: center;
+        display: flex;
 
         .board-row {
             display: flex;
@@ -47,9 +55,6 @@
             align-self: center;
             width: 50px;
             height: 50px;
-            -webkit-user-select: none; /* Chrome/Safari */        
-            -moz-user-select: none; /* Firefox */
-            -ms-user-select: none; /* IE10+ */
         }
     }
 

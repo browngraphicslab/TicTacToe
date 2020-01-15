@@ -9,7 +9,7 @@ module.exports = {
     entry: {
         solution_bundle: entry("solution"),
         stencil_bundle: entry("stencil"),
-        stateful_bundle: entry("stateful")
+        advanced_bundle: entry("advanced")
     },
     devtool: "source-map",
     output: {
@@ -27,7 +27,7 @@ module.exports = {
     },
     plugins: [
         new Copy([
-            { from: resolve(__dirname, "src/assets") , to: public }
+            { from: resolve(__dirname, "src/assets"), to: public }
         ])
     ],
     module: {

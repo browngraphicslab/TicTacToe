@@ -12,7 +12,7 @@ interface BoardProps {
 @observer
 export default class Board extends React.Component<BoardProps> {
     /**
-     * TODO: Declare instance variables here (if / as needed).
+     * TODO: Declare instance variables here (if / as needed). Note the following difference in declaration:
      * @observable private instanceVar1 = "changing me will update my rendered value"
      * private instanceVar2 = "changing me will NOT update my rendered value"
      */

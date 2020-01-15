@@ -17,7 +17,7 @@ server.use(bodyParser.json({ limit: "10mb" }));
 server.use(bodyParser.urlencoded({ extended: true }));
 
 if (!existsSync(database)) {
-    cleanDatabase();    
+    cleanDatabase();
 }
 
 function cleanDatabase() {
@@ -40,11 +40,11 @@ function read() {
     return JSON.parse(readFileSync(database, 'utf8'));
 }
 
-const fallback = "solution"; 
+const fallback = "solution";
 server.get("/tic-tac-toe/:version?", (req, res) => {
     let { version } = req.params;
     if (version) {
-        if (!["stateful", "stencil", "solution"].includes(version = version.toLowerCase().trim())) {
+        if (!["advanced", "stencil", "solution"].includes(version = version.toLowerCase().trim())) {
             return res.redirect("/tic-tac-toe");
         }
     } else {
@@ -54,14 +54,14 @@ server.get("/tic-tac-toe/:version?", (req, res) => {
     res.sendFile(path);
 });
 
-server.get("/tic-tac-toe/stateful/:action", (req, res) => {
+server.get("/tic-tac-toe/advanced/:action", (req, res) => {
     const { action } = req.params;
     switch (action) {
         case "state":
             return res.send(read());
         case "clear":
             cleanDatabase();
-            res.redirect("/tic-tac-toe/stateful");
+            res.redirect("/tic-tac-toe/advanced");
     }
 });
 
