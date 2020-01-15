@@ -20,6 +20,7 @@ interface SquareProps {
     pixelSideLength: number;
     location: Location;
     notifyBoard(location: Location): void;
+    isGameOver: boolean;
 }
 
 @observer
@@ -32,6 +33,10 @@ export default class Square extends React.Component<SquareProps> {
     @observable public identity: Identity = Identity.None;
     @observable private opacity = opacityValues.idle;
 
+    private get canPlay() {
+        return this.identity === Identity.None && !this.props.isGameOver;
+    }
+
     /**
      * Because we're changing values marked as @observable (namely, this.identity and this.opacity),
      * we have to mark this method as an @action to tell mobx to pay attention to this *state change*
@@ -40,7 +45,7 @@ export default class Square extends React.Component<SquareProps> {
      */
     @action
     private makeMove = () => {
-        if (this.identity === Identity.None) {
+        if (this.canPlay) {
             const { notifyBoard, location, currentPlayer } = this.props;
             this.identity = currentPlayer;
             this.opacity = opacityValues.activated;
@@ -112,8 +117,8 @@ export default class Square extends React.Component<SquareProps> {
                 // if (this.identity === Identity.None) {
                 //     this.opacity = opacityValues.hover;     
                 // }
-                onPointerEnter={() => this.identity === Identity.None && (this.opacity = opacityValues.hover)}
-                onPointerLeave={() => this.identity === Identity.None && (this.opacity = opacityValues.idle)}
+                onPointerEnter={() => this.canPlay && (this.opacity = opacityValues.hover)}
+                onPointerLeave={() => this.canPlay && (this.opacity = opacityValues.idle)}
                 // again we have object destructuring syntax, but on the other side:
                 // this line is telling the style property to take in an object whose key is 'opacity', and
                 // whose value is given by the local variable 'opacity' assigned on line 111. But, rather than writing

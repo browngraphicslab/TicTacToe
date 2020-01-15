@@ -54,16 +54,12 @@ server.get("/tic-tac-toe/:version?", (req, res) => {
     res.sendFile(path);
 });
 
-server.get("/tic-tac-toe/advanced/:action", (req, res) => {
-    const { action } = req.params;
-    switch (action) {
-        case "state":
-            return res.send(read());
-        case "clear":
-            cleanDatabase();
-            res.redirect("/tic-tac-toe/advanced");
-    }
+server.get("/clear", (_req, res) => {
+    cleanDatabase();
+    res.redirect("/tic-tac-toe/advanced");
 });
+
+server.get("/state", (_req, res) => res.send(read()))
 
 /**
  * These are routers that allow the server to

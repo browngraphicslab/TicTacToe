@@ -164,9 +164,6 @@ export default class Board extends React.Component<BoardProps> {
      * that triggered it. 
      */
     private handleMove = ({ row, column }: Location) => {
-        if (this.isGameOver) {
-            return;
-        }
         this.elapsedMoves++
         const { gameState } = this;
         // if you want to see messages in the browser development console (super helpful for
@@ -288,6 +285,7 @@ export default class Board extends React.Component<BoardProps> {
                             location={{ row, column }}
                             pixelSideLength={this.squareSideLength}
                             currentPlayer={this.currentPlayer}
+                            isGameOver={this.isGameOver}
                         />
                     );
                 }
