@@ -4,64 +4,8 @@
 // http://thesassway.com/beginner/the-inception-rule
 
 .outer {
-    width: 100%;
-    height: 100%;
-    justify-content: center;
-    flex-direction: row;
     display: flex;
-    text-align: center;
-
-    .drag-source {
-        z-index: 1;
-        border-radius: 25%;
-        width: 70px;
-        height: 70px;
-        align-self: center;
-        background: white;
-        padding: 10px;
-        border: 2px solid red;
-        margin-right: 50px;
-        display: flex;
-        justify-content: center;
-
-        .drag-hand {
-            pointer-events: none;
-            align-self: center;
-            width: 50px;
-            height: 50px;
-            -webkit-user-select: none; /* Chrome/Safari */        
-            -moz-user-select: none; /* Firefox */
-            -ms-user-select: none; /* IE10+ */
-        }
-    }
-
-    .board-container {
-        text-align: center;
-        display: flex;
-        flex-direction: row;
-        justify-content: center;
-        height: calc(100% - 40px);
-        width: 100%;
-        position: absolute;
-        border: 1px solid red;
-        
-        .board-warning {
-            color: white;
-            align-self: center;
-        }
-        
-        .board {
-            transition: 0.5s opacity ease;
-            align-self: center;
-    
-            .board-row {
-                display: flex;
-                flex-direction: row;        
-            }
-    
-        }
-    
-    }
+    justify-content: center;
     
     .slider {
         width: calc(100% - 40px);

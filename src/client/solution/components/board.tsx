@@ -5,9 +5,9 @@ import * as React from "react";
 import "../style/board.scss";
 import { observer } from "mobx-react";
 import Square from "./square";
-import { Identity, Location, src } from "../logic/utilities";
+import { Identity, Location, src, Server } from "../logic/utilities";
 import { checkForEndConditions } from "../logic/analysis";
-import { observable, action, runInAction } from "mobx";
+import { observable, action, reaction, IReactionDisposer, computed } from "mobx";
 
 /**
  * One of the issues with plain JavaScript objects is that they can literally
@@ -59,6 +59,9 @@ import { observable, action, runInAction } from "mobx";
  */
 interface BoardProps {
     background: string;
+    dimensions: number;
+    opacity?: number;
+    height?: string;
 }
 
 /**
@@ -72,16 +75,36 @@ interface BoardProps {
 export default class Board extends React.Component<BoardProps> {
     // these are instance variables, just like in Java (or any other major language)
     @observable private pixelSideLength = 500;
-    @observable private dimensions = 3;
-    @observable private opacity = 0;
     @observable private dragThumbX = 0;
     @observable private dragThumbY = 0;
     @observable private currentPlayer = Identity.X;
+    @observable private elapsedMoves = 0;
 
-    private outerRef = React.createRef<HTMLDivElement>();
+    private containerRef = React.createRef<HTMLDivElement>();
     private gameState: Identity[][];
     private maxMoveCount = 0;
-    private elapsedMoves = 0;
+    private dimensionUpdateDisposer: IReactionDisposer;
+
+    @computed
+    public get gameStarted() {
+        return this.elapsedMoves > 0;
+    }
+
+    private get opacity() {
+        const { opacity } = this.props;
+        if (opacity === undefined) {
+            return 1;
+        }
+        return opacity;
+    }
+
+    private get height() {
+        const { height } = this.props;
+        if (height === undefined) {
+            return "100%";
+        }
+        return height;
+    }
 
     // take a look at the object destructuring link in ./square.tsx at
     // the top of the render method to gain some insight onto this { size, ...remaining } syntax
@@ -91,11 +114,15 @@ export default class Board extends React.Component<BoardProps> {
         // build a 'size by size' matrix to model the state of the game board
         this.gameState = this.constructBoardLogic();
         window.addEventListener("resize", this.resize);
+        this.dimensionUpdateDisposer = reaction(
+            () => this.props.dimensions,
+            () => this.gameState = this.constructBoardLogic()
+        )
     }
 
     private constructBoardLogic = () => {
         const outer = Array<Array<Identity>>();
-        const { dimensions } = this;
+        const { dimensions } = this.props;
         for (let row = 0; row < dimensions; row++) {
             outer.push(Array<Identity>(dimensions).fill(Identity.None));
         }
@@ -105,16 +132,25 @@ export default class Board extends React.Component<BoardProps> {
 
     @action
     private resize = () => {
-        const { current } = this.outerRef;
+        const { current } = this.containerRef;
         if (current) {
-            const { width, height } = current.getBoundingClientRect(); 
+            const { width, height } = current.getBoundingClientRect();
             this.pixelSideLength = Math.min(width, height) - 100;
         }
     }
 
+    /**
+     * The following two functions are built-in React component lifecycle functions.
+     * Technically, so is render()!
+     * https://programmingwithmosh.com/javascript/react-lifecycle-methods/ 
+     */
+
     componentDidMount() {
         this.resize();
-        runInAction(() => this.opacity = 1);
+    }
+
+    componentWillUnmount() {
+        this.dimensionUpdateDisposer();
     }
 
     /**
@@ -127,40 +163,46 @@ export default class Board extends React.Component<BoardProps> {
         const { gameState } = this;
         // if you want to see messages in the browser development console (super helpful for
         // debugging!), just drop a quick console.log. Note that the backticks, or ``, allow for
-        // templating (also known as string interpolation) syntax (like a nicer version of Java's String.format())
+        // templating syntax (like a nicer version of Java's String.format())
         // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Template_literals
         console.log(`Hey, square (${row}, ${column}) goes to Player ${this.currentPlayer.toUpperCase()}!`);
-        
+
         // update the board state to reflect the move
         gameState[row][column] = this.currentPlayer;
+
+        // toggle to the other player using a ternary statement
         this.currentPlayer = this.currentPlayer === Identity.X ? Identity.O : Identity.X;
 
         // this is what's called an inner assignment: not only do we execute checkForEndCondition(gameState),
         // we also assign the value it returns to 'winner' in one fell swoop, and then use that value
         // when evaluating the comparison of identities
         let winner: Identity;
-        if ((winner = checkForEndConditions(gameState)) !== Identity.None) {
-            this.notifyPlayerEndGame(`Congratulations, Player ${winner.toUpperCase()}! You've won!`);
-        } else if (this.elapsedMoves === this.maxMoveCount) {
-            this.notifyPlayerEndGame("Well, it's a draw!");
+        if ((winner = checkForEndConditions(gameState)) !== Identity.None || this.elapsedMoves === this.maxMoveCount) {
+            this.notifyPlayerEndGame(winner);
         }
     }
 
+    @action
+    private onPointerMove = (e: PointerEvent) => {
+        this.dragThumbX += e.movementX;
+        this.dragThumbY += e.movementY;
+    };
+
+    @action
+    private onPointerUp = (e: PointerEvent) => {
+        const [square] = document.elementsFromPoint(e.x, e.y).filter(element => element.className === "square");
+        square && square.dispatchEvent(new CustomEvent("play"))
+        window.removeEventListener("pointermove", this.onPointerMove);
+        window.removeEventListener("pointerup", this.onPointerUp);
+        this.dragThumbX = 0;
+        this.dragThumbY = 0;
+    };
+
     private startDrag = () => {
-        const onPointerMove = action((e: PointerEvent) => {
-            this.dragThumbX += e.movementX;
-            this.dragThumbY += e.movementY;
-        });
-        const onPointerUp = action((e: PointerEvent) => {
-            const [square] = document.elementsFromPoint(e.x, e.y).filter(element => element.className === "square");
-            square && square.dispatchEvent(new CustomEvent("play"))
-            window.removeEventListener("pointermove", onPointerMove);
-            window.removeEventListener("pointerup", onPointerUp);
-            this.dragThumbX = 0;
-            this.dragThumbY = 0;
-        });
-        window.addEventListener("pointermove", onPointerMove);
-        window.addEventListener("pointerup", onPointerUp);
+        window.removeEventListener("pointermove", this.onPointerMove);
+        window.removeEventListener("pointerup", this.onPointerUp);
+        window.addEventListener("pointermove", this.onPointerMove);
+        window.addEventListener("pointerup", this.onPointerUp);
     }
 
     /**
@@ -173,7 +215,18 @@ export default class Board extends React.Component<BoardProps> {
      * https://www.w3schools.com/jsref/met_win_settimeout.asp
      * https://developer.mozilla.org/en-US/docs/Web/API/Window/alert 
      */
-    private notifyPlayerEndGame = (message: string) => {
+    private notifyPlayerEndGame = (winner: Identity) => {
+        let message: string;
+        switch (winner) {
+            case Identity.X:
+            case Identity.O:
+                message = `Congratulations, Player ${winner.toUpperCase()}! You've won!`;
+                break;
+            case Identity.None:
+            default:
+                message = "Well, it's a draw!";
+        }
+        Server.Post("/winner", { winner });
         setTimeout(() => {
             alert(message);
             window.location.reload(); // you can programmatically refresh the page (to reset the game state) - cool!
@@ -191,8 +244,10 @@ export default class Board extends React.Component<BoardProps> {
      * It's invoked by this.content, NOT this.content().
      * https://www.typescriptlang.org/docs/handbook/classes.html#accessors
      */
+    @computed
     private get board() {
-        const { dimensions, pixelSideLength: length } = this;
+        const { pixelSideLength: length } = this;
+        const { dimensions } = this.props;
         let board: JSX.Element[] = [<h1 className={"board-warning"}>Your board must be at least 3 by 3 squares...</h1>];
         if (dimensions > 2) {
             board = [];
@@ -215,28 +270,9 @@ export default class Board extends React.Component<BoardProps> {
                         />
                     );
                 }
-                board.push(<div className={"board-row"}>{...rowContents}</div>);    
+                board.push(<div className={"board-row"}>{...rowContents}</div>);
             }
         }
-        // this final value has wrapped up the entire hierarchy (a 3 by 3 example is given):
-        // <div class="board">
-        //     <div class="row">
-        //          <Square ... />
-        //          <Square ... /> 
-        //          <Square ... />
-        //     </div> 
-        //     <div class="row">
-        //          <Square ...>
-        //          <Square ...> 
-        //          <Square ...> 
-        //     </div>
-        //     <div class="row">
-        //          <Square ...>
-        //          <Square ...> 
-        //          <Square ...> 
-        //     </div>
-        // </div>
-        // note that this is NOT 
         return (
             <div
                 className={"board"}
@@ -249,6 +285,21 @@ export default class Board extends React.Component<BoardProps> {
         );
     }
 
+    private get dragTarget() {
+        return (
+            <div
+                onPointerDown={this.startDrag}
+                className={"drag-target"}
+                style={{ transform: `translate(${this.dragThumbX}px, ${this.dragThumbY}px)` }}
+            >
+                <img
+                    className={"drag-hand"}
+                    src={src("move.png")}
+                />
+            </div>
+        );
+    }
+
     /**
      * This is where the magic happens: this is where React looks for you
      * to tell it what to render. The return value is pure JSX, that superset of HTML.
@@ -258,29 +309,22 @@ export default class Board extends React.Component<BoardProps> {
      */
     render() {
         const { background } = this.props;
+        const { height } = this;
         return (
-            // literal JSX
-            <div className={"outer"} ref={this.outerRef}>
-                <div
-                    // here's how we hook into the css (scss) styling
-                    // we've written: this "cointainer" string matches the
-                    // css selector we're importing on line 5 from ../style/board.scss
-                    className={"board-container"}
-                    style={{ background }}
-                >
+            <div
+                ref={this.containerRef}
+                // here's how we hook into the static css (scss) style sheets
+                // we've written: this "board-cointainer" string matches the
+                // css selector we're importingfrom ../style/stateful-board.scss
+                className={"board-container"}
+                // but, for values that need to be changed dynamically based on
+                // logic in these component files, we can also update the style
+                // prop of the JSX element at runtime
+                style={{ background, height }}
+            >
                 {/* rather than writing literal JSX, we can use an accessor or a function that *returns* JSX */}
-                    <div
-                        onPointerDown={this.startDrag}
-                        className={"drag-source"}
-                        style={{ transform: `translate(${this.dragThumbX}px, ${this.dragThumbY}px)` }}
-                    >
-                        <img
-                            className={"drag-hand"}
-                            src={src("move.png")}
-                        />
-                    </div>
-                    {this.board}
-                </div>
+                {this.dragTarget}
+                {this.board}
             </div>
         );
     }

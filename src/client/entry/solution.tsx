@@ -50,7 +50,7 @@ import Board from "../solution/components/board";
  * Now take a look at board.tsx and square.tsx to dive deeper into examples of the structure, features and patterns
  * of React components.
  */
-const whatToRender = <Board background={"#003"} />;
+const whatToRender = <Board background={"#003"} dimensions={3} />;
 
 /**
  * Unlike in a JQuery project, this line is the only time you should ever directly interact with the DOM. In your components,

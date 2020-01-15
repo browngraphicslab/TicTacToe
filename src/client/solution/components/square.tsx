@@ -40,10 +40,12 @@ export default class Square extends React.Component<SquareProps> {
      */
     @action
     private makeMove = () => {
-        const { notifyBoard, location, currentPlayer } = this.props;
-        this.identity = currentPlayer;
-        this.opacity = opacityValues.activated;
-        notifyBoard(location);
+        if (this.identity === Identity.None) {
+            const { notifyBoard, location, currentPlayer } = this.props;
+            this.identity = currentPlayer;
+            this.opacity = opacityValues.activated;
+            notifyBoard(location);
+        }
     }
 
     /**
