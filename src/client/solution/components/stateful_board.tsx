@@ -90,7 +90,7 @@ export default class Board extends React.Component<BoardProps> {
     private gameState: Identity[][];
     private maxMoveCount = 0;
     private elapsedMoves = 0;
-    private dimensionUpdater: IReactionDisposer;
+    private dimensionUpdateDisposer: IReactionDisposer;
 
     // take a look at the object destructuring link in ./square.tsx at
     // the top of the render method to gain some insight onto this { size, ...remaining } syntax
@@ -100,7 +100,7 @@ export default class Board extends React.Component<BoardProps> {
         // build a 'size by size' matrix to model the state of the game board
         this.gameState = this.constructBoardLogic();
         window.addEventListener("resize", this.resize);
-        this.dimensionUpdater = reaction(
+        this.dimensionUpdateDisposer = reaction(
             () => this.dimensions,
             () => this.gameState = this.constructBoardLogic()
         )
@@ -131,7 +131,7 @@ export default class Board extends React.Component<BoardProps> {
     }
     
     componentWillUnmount() {
-        this.dimensionUpdater();
+        this.dimensionUpdateDisposer();
     }
 
     /**
