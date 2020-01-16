@@ -84,6 +84,8 @@ export default class Square extends React.Component<SquareProps> {
          */
         return (
             <div
+                // this is where we tell the square to listen to the custom event we throw in the parent
+                // component (in Board.tsx) when the drag target is dropped over a square
                 ref={e => e && e.addEventListener("play", this.makeMove)}
                 className={"square"}
                 // when this <div> is clicked, execute the following function
