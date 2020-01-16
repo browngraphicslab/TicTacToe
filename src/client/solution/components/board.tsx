@@ -73,6 +73,9 @@ interface BoardProps {
  * and factor out values into constants.
  */
 const squarePadding = 5;
+// exported this value since it's imported and used in setting up the event handler in Square.tsx
+export const dropEventName = "dragTargetDropped";
+
 
 /**
  * All components that we work with should be marked @observer so that they can React to mobx's state management.
@@ -442,12 +445,7 @@ export default class Board extends React.Component<BoardProps> {
          * https://www.typescriptlang.org/docs/handbook/release-notes/typescript-3-7.html#optional-chaining 
          * 
          */
-        square && square.dispatchEvent(new CustomEvent<{}>("play", {
-            bubbles: true,
-            detail: {
-
-            }
-        }))
+        square && square.dispatchEvent(new CustomEvent<{}>(dropEventName, { bubbles: true }));
 
         // once the drag has ended after pointer up, stop listening
         window.removeEventListener("pointermove", this.onPointerMove);

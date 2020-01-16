@@ -4,9 +4,12 @@
 // http://thesassway.com/beginner/the-inception-rule
 
 .passive {
-    -webkit-user-select: none; /* Chrome/Safari */        
-    -moz-user-select: none; /* Firefox */
-    -ms-user-select: none; /* IE10+ */
+    -webkit-user-select: none;
+    /* Chrome/Safari */
+    -moz-user-select: none;
+    /* Firefox */
+    -ms-user-select: none;
+    /* IE10+ */
 }
 
 .board-container {
@@ -18,7 +21,7 @@
     width: 100%;
     position: absolute;
     border: 2px solid red;
-    
+
     .board {
         transition: 0.5s opacity ease;
         align-self: center;
@@ -27,7 +30,7 @@
 
         .board-row {
             display: flex;
-            flex-direction: row;        
+            flex-direction: row;
         }
 
         .board-warning {
@@ -53,8 +56,8 @@
         .drag-hand {
             pointer-events: none;
             align-self: center;
-            width: 50px;
-            height: 50px;
+            width: 35px;
+            height: 35px;
         }
     }
 

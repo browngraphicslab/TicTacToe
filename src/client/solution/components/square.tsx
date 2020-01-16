@@ -3,6 +3,7 @@ import "../style/square.scss";
 import { observable, action } from "mobx";
 import { observer } from "mobx-react";
 import { Identity, Location, src } from "../logic/utilities";
+import { dropEventName } from "./board";
 
 /**
  * Out here, we're in the module, where we can just
@@ -86,7 +87,7 @@ export default class Square extends React.Component<SquareProps> {
             <div
                 // this is where we tell the square to listen to the custom event we throw in the parent
                 // component (in Board.tsx) when the drag target is dropped over a square
-                ref={e => e && e.addEventListener("play", this.makeMove)}
+                ref={e => e && e.addEventListener(dropEventName, this.makeMove)}
                 className={"square"}
                 // when this <div> is clicked, execute the following function
                 onClick={this.makeMove}
