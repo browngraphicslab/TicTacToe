@@ -336,7 +336,8 @@ export default class Board extends React.Component<BoardProps> {
     };
 
     /**
-     * You can listen to different events 
+     * You can listen and later unsubscribe to different events at the window or document level
+     * https://www.w3schools.com/jsref/met_document_addeventlistener.asp
      */
     private startDrag = () => {
         window.removeEventListener("pointermove", this.onPointerMove);
