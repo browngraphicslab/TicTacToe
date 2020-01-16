@@ -314,7 +314,7 @@ export default class Board extends React.Component<BoardProps> {
     private onPointerUp = ({ x, y }: PointerEvent) => {
         /**
          * Here, we have to get a little creative when handling the 'drop' of the dragTarget onto a given square.
-         * Since our 'dragging' just consists of moving the transform and not some drag event, the square's won't receive
+         * Since our 'dragging' just consists of moving the transform and not some drag event, the squares won't receive
          * a native drop event. So what do we do? If this HTML page were a cork board with paper squares on it, we basically
          * put a thumbtack in the board at the location where the pointer up event fired, and take a look at all the elements
          * (stacked in the Z direction) that intersect with the point at which this event occurs.
