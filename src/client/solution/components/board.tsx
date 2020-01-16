@@ -489,6 +489,7 @@ export default class Board extends React.Component<BoardProps> {
         }
 
         // notify the parent component if they've passed in a handler property
+        // https://www.typescriptlang.org/docs/handbook/release-notes/typescript-3-7.html#optional-chaining 
         this.props.onGameEnd?.(winner);
 
         setTimeout(() => {
