@@ -1,6 +1,6 @@
 import { Identity } from "./utilities";
 
-export function checkForEndConditions(gameState: Identity[][]) {
+export function determineWinner(gameState: Identity[][]): Identity {
     let winner: Identity
     const size = gameState.length;
 

@@ -7,7 +7,7 @@ import "../style/shared.scss";
 import { observer } from "mobx-react"; // this is how your import a module's standard export
 import Square from "./square"; // this is how you import a module's *default* export
 import { Identity, Location, src, IdentityColors } from "../logic/utilities";
-import { checkForEndConditions } from "../logic/analysis";
+import { determineWinner } from "../logic/analysis";
 import { observable, action, reaction, IReactionDisposer, computed } from "mobx";
 
 /**
@@ -332,10 +332,10 @@ export default class Board extends React.Component<BoardProps> {
 
         /**
          * Check for end of game conditions, and if the game is over, begin the exit routine.
-         * Note that explicitly typing winner as Identity is optional, but can be helpful for
+         * Note that explicitly typing winner as Identity is fully optional, but can be helpful for
          * readability.
          */
-        const winner: Identity = checkForEndConditions(gameState);
+        const winner: Identity = determineWinner(gameState);
         if (winner !== Identity.None || this.elapsedMoves === this.maxMoveCount) {
             this.notifyPlayerEndGame(winner);
         }
