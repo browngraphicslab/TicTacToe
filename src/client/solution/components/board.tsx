@@ -93,7 +93,7 @@ export default class Board extends React.Component<BoardProps> {
     @observable private elapsedMoves = 0;
     @observable private dragTargetX = 0;
     @observable private dragTargetY = 0;
-    @observable private currentPlayer = Identity.X;
+    @observable private currentPlayer = Identity.X; // Player X starts
     @observable private pixelSideLength?: number;
 
     /**
