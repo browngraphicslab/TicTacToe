@@ -76,10 +76,10 @@ const squarePadding = 5;
 
 /**
  * All components that we work with should be marked @observer so that they can React to mobx's state management.
- * Even if this class did not have any @observable instance variables, it would be good practice to make your
- * component an @observer by default. You might need to unexpectedly add observable functionality to your component
- * and add an @observable instance variable, and it's very easy to end up with perfect code that won't reflect changes
- * to @observable variables because your component isn't an @observer.
+ * Even if components lack @observable instance variables, it it is considered good practice to mark them
+ * as @observers since you might need to add @observable instance variables down the road. At this point, if your
+ * component is not an observer and you expect it to be responsive to changes in @observables, it can seem like there
+ * are serious issues with your code even if it's written correctly.
  */
 @observer
 export default class Board extends React.Component<BoardProps> {
