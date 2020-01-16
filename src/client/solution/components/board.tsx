@@ -90,10 +90,14 @@ export default class Board extends React.Component<BoardProps> {
      * be reflected on screen, changing either themselves or other values that rely on them.
      * https://mobx.js.org/refguide/observable.html
      */
+    // move counter (@observable only because it is needed as such in AdvancedBoard.tsx)
     @observable private elapsedMoves = 0;
-    @observable private dragTargetX = 0;
+    // set the x, y translation of the transform of the drag target
+    @observable private dragTargetX = 0; 
     @observable private dragTargetY = 0;
+    // stores the identity of the player responsible for the current move
     @observable private currentPlayer = Identity.X; // Player X starts
+    // stores the pixel length one side of the board grid can be, proportional to the window size
     @observable private pixelSideLength?: number;
 
     /**
@@ -103,8 +107,10 @@ export default class Board extends React.Component<BoardProps> {
      * https://reactjs.org/docs/refs-and-the-dom.html 
      */
     private containerRef = React.createRef<HTMLDivElement>();
+    // a matrix that logically mirrors the graphical state of the board
     private gameState: Identity[][];
-    private maxMoveCount = 0;
+    // a simple computation that, when compared to the elapsed move count, determines when the game has ended
+    private maxMoveCount = 0; 
     /**
      * When a component unmounts, it's important to clean up after your
      * reactions so that they don't continue to execute. Helpfully, reaction(...)
