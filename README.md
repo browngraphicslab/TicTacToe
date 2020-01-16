@@ -41,7 +41,7 @@ drag the hand icon and drop it on the desired square.
 If you're looking for a challenge, try implementing:
 1) Undo / redo of moves
 2) Notify the user of end of more gracefully
-3) Display the identity of the player currently considering a move
+3) Make each move timed: if the user takes too long, forfeit their move and give control to their opponent
 4) Highlighting the winning row / column / diagonal
 5) Adding routes to the server to send and receive more information
 6) Swap out the database.json file for an actual MongoDB or Mongoose client
