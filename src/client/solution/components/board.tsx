@@ -437,6 +437,7 @@ export default class Board extends React.Component<BoardProps> {
          * expression as a whole cannot return anything other than false, since false && <anything> will always
          * be false. TypeScript, and many other languages, will handle this intelligently by not even bothering
          * to evaluate the second clause of the expression, which, in our case, is square.dispatchEvent(...).
+         * https://codeburst.io/javascript-short-circuit-conditionals-bbc13ac3e9eb
          * https://codeburst.io/javascript-short-circuit-evaluation-3709ffda6384  
          * 
          * So, this all boils down to: if square is not undefined, then evaluate the second clause, i.e. dispatch
