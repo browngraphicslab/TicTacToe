@@ -426,9 +426,10 @@ export default class Board extends React.Component<BoardProps> {
     }
 
     private get renderDragTarget() {
+        const { startDrag, dragTargetX, dragTargetY, currentPlayer } = this;
         return (
             <div
-                onPointerDown={this.startDrag}
+                onPointerDown={startDrag}
                 className={"drag-target"}
                 /**
                  * You can move and resize elements on screen without actually
@@ -438,11 +439,11 @@ export default class Board extends React.Component<BoardProps> {
                  * when they change, React renders and updates the transform on screen.
                  * https://www.w3schools.com/cssref/css3_pr_transform.asp 
                  */
-                style={{ transform: `translate(${this.dragTargetX}px, ${this.dragTargetY}px)` }}
+                style={{ transform: `translate(${dragTargetX}px, ${dragTargetY}px)` }}
             >
                 <img
                     className={"drag-hand passive"}
-                    src={src("move.png")}
+                    src={src(`${currentPlayer}.png`)}
                 />
             </div>
         );
