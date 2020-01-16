@@ -1,8 +1,6 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
-// NOTE: change this import to "./stencil/components/board" *and re-run npm run make* to render your own code!
 import Board from "../solution/components/board";
-// import SmartBoard from "./solution/components/smart_board";
 
 /**
  * This is a React component, invoked by writing JSX. JSX is a superset
@@ -67,7 +65,6 @@ const whereToRender = document.getElementById("root");
  * the HTML being rendered on screen. But we're writing in React, not working directly with regular HTML
  * DOM elements...so how does the browser know how to take our components and add their output to
  * the DOM? This line right here.
- * 
  * https://reactjs.org/docs/react-dom.html#render 
  */
 ReactDOM.render(whatToRender, whereToRender);

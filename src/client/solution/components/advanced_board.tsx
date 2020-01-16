@@ -22,6 +22,11 @@ export default class AdvancedBoard extends React.Component<AdvancedBoardProps> {
     private get dimensions() {
         return this._dimensions;
     }
+
+    /**
+     * Every time we assign a new value to this.dimensions,
+     * it gets sent to the server, under the hood.
+     */
     private set dimensions(dimensions: number) {
         runInAction(() => this._dimensions = dimensions);
         Server.Post("/state", { dimensions });
@@ -34,6 +39,12 @@ export default class AdvancedBoard extends React.Component<AdvancedBoardProps> {
     }
 
     componentDidMount() {
+        /**
+         * Fetch the stored value the server and basically
+         * read it into this component. Again, since
+         * we're changing an observable, note our function
+         * must be wrapped in an action.
+         */
         Server.Get("/dimensions").then(action(({ dimensions }) => {
             this.opacity = 1;
             this.dimensions = dimensions;
