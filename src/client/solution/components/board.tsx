@@ -190,6 +190,7 @@ export default class Board extends React.Component<BoardProps> {
          * [-|===|--|===|--|===|-]
          * 
          * [ denotes the perimeter of the entire board
+         * | denotes a square's side
          * - denotes the square's padding, 5 by default
          * === denotes the square's width
          * 
