@@ -157,6 +157,7 @@ export default class Board extends React.Component<BoardProps> {
      * The following two functions are built-in React component lifecycle functions.
      * Technically, so is render()! In short, they're helpful, built in hooks to execute custom logic that
      * React calls automatically at different points in your component's rendering lifecycle.
+     * https://reactjs.org/docs/state-and-lifecycle.html 
      * https://programmingwithmosh.com/javascript/react-lifecycle-methods/ 
      */
 
