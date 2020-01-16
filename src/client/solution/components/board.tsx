@@ -405,7 +405,7 @@ export default class Board extends React.Component<BoardProps> {
         // if this syntax looks weird, take a look at http://budiirawan.com/typescript-destructuring-array/
         const [square] = document.elementsFromPoint(x, y).filter(element => element.className === "square");
         /**
-         * This might seem like odd syntax as well, but it's a concise
+         * This next line of code might seem like odd syntax as well, but it's a concise
          * way of writing 
          * 
          * if (square !== null && this.square !== undefined) {
