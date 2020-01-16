@@ -489,8 +489,7 @@ export default class Board extends React.Component<BoardProps> {
         }
 
         // notify the parent component if they've passed in a handler property
-        const { onGameEnd } = this.props;
-        onGameEnd && onGameEnd(winner);
+        this.props.onGameEnd?.(winner);
 
         setTimeout(() => {
             alert(message);
