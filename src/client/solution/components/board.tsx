@@ -121,17 +121,17 @@ export default class Board extends React.Component<BoardProps> {
     private dimensionUpdateDisposer: IReactionDisposer;
     private isGameOver = false;
 
-    // take a look at the object destructuring link in ./square.tsx at
-    // the top of the render method to gain some insight onto this { size, ...remaining } syntax
     constructor(props: BoardProps) {
-        // if you explictly define a constructor in a subclass, the first line must be super(), and here, we must pass in our props to React.
+        // if you explictly define a constructor in a subclass, the first line must be super(),
+        // at which point you pass your props up to the React.Component parent from which you inherit
         super(props);
-        // build a 'size by size' matrix to model the state of the game board
+        // with an n-dimensional board, builds an n by n matrix to model the state of the game board
         this.gameState = this.constructBoardLogic();
+        // set up the functionality that keeps the board appropriately sized when window dimensions change
         window.addEventListener("resize", this.onResize);
 
         /**
-         * Reactions answer the question "Wouldn't it be nice to run some code every time (an) @observable value(s) change(s)"?
+         * Mobx reactions answer the question "Wouldn't it be nice to run some code every time (an) @observable value(s) change(s)"?
          * The syntax might look weird at first, but building a reaction just means writing two functions and passing them into the
          * imported reaction() function. The first, or data, function contains all the
          * *observable* 'triggers' you care about, and will return some value. The second function will take, as an input, that same value
@@ -151,13 +151,13 @@ export default class Board extends React.Component<BoardProps> {
 
     /**
      * The following two functions are built-in React component lifecycle functions.
-     * Technically, so is render()! In short, they're helpful, built in hooks that
+     * Technically, so is render()! In short, they're helpful, built in hooks to execute custom logic that
      * React calls automatically at different points in your component's rendering lifecycle.
      * https://programmingwithmosh.com/javascript/react-lifecycle-methods/ 
      */
 
     componentDidMount() {
-        this.onResize();
+        this.onResize(); // set the board to the appropriate initial size
     }
 
     componentWillUnmount() {
