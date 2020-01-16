@@ -37,7 +37,7 @@ export namespace Server {
         return response;
     }
 
-} 
+}
 
 export interface Location {
     row: number;
@@ -49,3 +49,9 @@ export enum Identity {
     X = "x",
     O = "o"
 }
+
+export const IdentityColors = new Map<Identity, string>([
+    [Identity.None, "grey"],
+    [Identity.X, "red"],
+    [Identity.O, "blue"]
+]);

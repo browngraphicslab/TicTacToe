@@ -5,7 +5,7 @@ import * as React from "react";
 import "../style/board.scss"; // import css directly like this
 import { observer } from "mobx-react"; // this is how your import a module's standard export
 import Square from "./square"; // this is how you import a module's *default* export
-import { Identity, Location, src } from "../logic/utilities";
+import { Identity, Location, src, IdentityColors } from "../logic/utilities";
 import { checkForEndConditions } from "../logic/analysis";
 import { observable, action, reaction, IReactionDisposer, computed } from "mobx";
 
@@ -560,6 +560,9 @@ export default class Board extends React.Component<BoardProps> {
      */
     private get renderDragTarget() {
         const { startDrag, dragTargetX, dragTargetY, currentPlayer } = this;
+        if (this.isGameOver) {
+            return (null);
+        }
         return (
             <div
                 onPointerDown={startDrag}
@@ -572,7 +575,10 @@ export default class Board extends React.Component<BoardProps> {
                  * when they change, React renders and updates the transform on screen.
                  * https://www.w3schools.com/cssref/css3_pr_transform.asp 
                  */
-                style={{ transform: `translate(${dragTargetX}px, ${dragTargetY}px)` }}
+                style={{
+                    transform: `translate(${dragTargetX}px, ${dragTargetY}px)`,
+                    backgroundColor: IdentityColors.get(currentPlayer)
+                }}
             >
                 <img
                     className={"drag-hand passive"}

@@ -2,7 +2,7 @@ import * as React from "react";
 import "../style/square.scss";
 import { observable, action } from "mobx";
 import { observer } from "mobx-react";
-import { Identity, Location, src } from "../logic/utilities";
+import { Identity, Location, src, IdentityColors } from "../logic/utilities";
 import { dropEventName } from "./board";
 
 /**
@@ -77,7 +77,7 @@ export default class Square extends React.Component<SquareProps> {
          * objects, it can be quite handy.
          * https://codeburst.io/es6-destructuring-the-complete-guide-7f842d08b98f 
          */
-        const { pixelSideLength: length } = this.props;
+        const { pixelSideLength: length, currentPlayer } = this.props;
         const { opacity } = this;
         /**
          * Now, we'll start hooking into event code in the JSX below!
@@ -113,6 +113,7 @@ export default class Square extends React.Component<SquareProps> {
                  * style={{ opacity: opacity }}, TypeScript is smart enough to assign the variable with that name to that particular key.
                  */
                 style={{
+                    backgroundColor: IdentityColors.get(this.identity),
                     width: length,
                     height: length,
                     opacity
