@@ -441,7 +441,8 @@ export default class Board extends React.Component<BoardProps> {
          * https://codeburst.io/javascript-short-circuit-evaluation-3709ffda6384  
          * 
          * So, this all boils down to: if square is not undefined, then evaluate the second clause, i.e. dispatch
-         * the event. It's one of the many nice null checks built into the language: an equivalent would be:
+         * the event. It's one of the many nice null checks built into the language. An equivalent, using
+         * what TypeScript calls 'optional chaining,' would be:
          * 
          * square?.dispatchEvent(...);
          * 
