@@ -3,7 +3,7 @@ import "../style/advanced_board.scss";
 import { observer } from "mobx-react";
 import { observable, action, runInAction, computed } from "mobx";
 import Board from "./board";
-import { Server, Identity } from "../logic/utilities";
+import { Server } from "../logic/utilities";
 
 interface AdvancedBoardProps {
     background: string;
@@ -19,7 +19,7 @@ export default class AdvancedBoard extends React.Component<AdvancedBoardProps> {
     @observable private sliderMin?: number
     @observable private sliderMax?: number
 
-    private get dimensions() {
+    private get dimensions(): number {
         return this._dimensions;
     }
 
@@ -33,7 +33,7 @@ export default class AdvancedBoard extends React.Component<AdvancedBoardProps> {
     }
 
     @computed
-    private get hasGameStarted() {
+    private get hasGameStarted(): boolean {
         const { current } = this.board;
         return current ? current.hasGameStarted : false;
     }
@@ -51,7 +51,7 @@ export default class AdvancedBoard extends React.Component<AdvancedBoardProps> {
         }));
     }
 
-    private get computeSliderRange() {
+    private get computeSliderRange(): { min: number, max: number } {
         if (!(this.sliderMin && this.sliderMax)) {
             let { minimumDimensions: min, maximumDimensions: max } = this.props;
             min = min || 3;
@@ -68,12 +68,12 @@ export default class AdvancedBoard extends React.Component<AdvancedBoardProps> {
         return { min: this.sliderMin, max: this.sliderMax };
     }
 
-    private get shouldShowSlider() {
+    private get shouldShowSlider(): boolean {
         const { min, max } = this.computeSliderRange;
         return !this.hasGameStarted && min < max;
     }
 
-    private get renderSlider() {
+    private get renderSlider(): JSX.Element {
         const visibility = this.shouldShowSlider ? "visible" : "hidden";
         const { min, max } = this.computeSliderRange;
         if (this.dimensions > max) {
@@ -94,7 +94,7 @@ export default class AdvancedBoard extends React.Component<AdvancedBoardProps> {
         );
     }
 
-    render() {
+    render(): JSX.Element {
         return (
             <div className={"outer"}>
                 <Board

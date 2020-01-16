@@ -31,12 +31,12 @@ export default class Square extends React.Component<SquareProps> {
     @observable private opacity = opacityValues.idle;
     @observable private transition = "0.5s opacity ease";
 
-    private get canPlay() {
+    private get canPlay(): boolean {
         return this.identity === Identity.None && !this.props.isGameOver;
     }
 
     @action
-    private makeMove = () => {
+    private makeMove = (): void => {
         if (this.canPlay) {
             const { notifyBoard, location, currentPlayer } = this.props;
             this.identity = currentPlayer;
@@ -45,7 +45,7 @@ export default class Square extends React.Component<SquareProps> {
         }
     }
 
-    private get content() {
+    private get content(): JSX.Element | null {
         const { pixelSideLength: length } = this.props;
         const { identity } = this;
         if (identity === Identity.None) {
@@ -70,7 +70,7 @@ export default class Square extends React.Component<SquareProps> {
         );
     }
 
-    render() {
+    render(): JSX.Element {
         /**
          * Does this 'const { myVar } = parent' look odd? Fair enough! But it's actually an awesome
          * feature of JavaScript and, thus, TypeScript. It's called

@@ -182,7 +182,7 @@ export default class Board extends React.Component<BoardProps> {
      * https://www.typescriptlang.org/docs/handbook/classes.html#accessors 
      */
     @computed
-    public get hasGameStarted() {
+    public get hasGameStarted(): boolean {
         return this.elapsedMoves > 0;
     }
 
@@ -195,7 +195,7 @@ export default class Board extends React.Component<BoardProps> {
      * https://mobx.js.org/refguide/computed-decorator.html
      */
     @computed
-    private get squareSideLength() {
+    private get squareSideLength(): number {
         const { dimensions } = this.props;
         const { pixelSideLength: length } = this;
         if (!length) {
@@ -233,7 +233,7 @@ export default class Board extends React.Component<BoardProps> {
      * return 1 by default."
      */
     @computed
-    private get opacity() {
+    private get opacity(): number {
         const { opacity } = this.props;
         if (opacity === undefined) {
             return 1;
@@ -246,7 +246,7 @@ export default class Board extends React.Component<BoardProps> {
      * return 100% by default."
      */
     @computed
-    private get height() {
+    private get height(): string {
         const { height } = this.props;
         if (height === undefined) {
             return "100%";
@@ -259,7 +259,7 @@ export default class Board extends React.Component<BoardProps> {
      * to build a two dimensional array (matrix)
      * to keep track of the underlying board state.
      */
-    private constructBoardLogic = () => {
+    private constructBoardLogic = (): Identity[][] => {
         const outer = Array<Array<Identity>>();
         const { dimensions } = this.props;
         for (let row = 0; row < dimensions; row++) {
@@ -279,7 +279,7 @@ export default class Board extends React.Component<BoardProps> {
      * values of the individual squares in the grid. 
      */
     @action
-    private updateBoardSideLength = () => {
+    private updateBoardSideLength = (): void => {
         const { current } = this.containerRef;
         if (current) {
             const { width, height } = current.getBoundingClientRect();
@@ -297,7 +297,7 @@ export default class Board extends React.Component<BoardProps> {
      * access game state and instance variables, but is invoked only in Square.tsx,
      * since it is passed in as a prop to <Square /> instances.
      */
-    private handleMove = ({ row, column }: Location) => {
+    private handleMove = ({ row, column }: Location): void => {
         this.elapsedMoves++ // increment the move counter
         const { gameState } = this;
 
@@ -350,7 +350,7 @@ export default class Board extends React.Component<BoardProps> {
      * You can listen and later unsubscribe to different events at the window or document level
      * https://www.w3schools.com/jsref/met_document_addeventlistener.asp
      */
-    private startDrag = () => {
+    private startDrag = (): void => {
         /**
          * These calls to addEventListener are not exclusive - take the following code:
          * 
@@ -388,7 +388,7 @@ export default class Board extends React.Component<BoardProps> {
      * https://mobx.js.org/refguide/action.html 
      */
     @action
-    private onPointerMove = ({ movementX, movementY }: PointerEvent) => {
+    private onPointerMove = ({ movementX, movementY }: PointerEvent): void => {
         this.dragTargetX += movementX;
         this.dragTargetY += movementY;
     };
@@ -405,7 +405,7 @@ export default class Board extends React.Component<BoardProps> {
      * (as a prop, from its perspective) this boards handleMove() with its location. Pretty cool!
      */
     @action
-    private onPointerUp = ({ x, y }: PointerEvent) => {
+    private onPointerUp = ({ x, y }: PointerEvent): void => {
         // determine, from all elements on screen that intersect with the event's point, which was a square
         // if this syntax looks weird, take a look at http://budiirawan.com/typescript-destructuring-array/
         const [square] = document.elementsFromPoint(x, y).filter(element => element.className.includes("square"));
@@ -471,7 +471,7 @@ export default class Board extends React.Component<BoardProps> {
      * with your app until / unless they click 'ok' on the alert.
      * https://developer.mozilla.org/en-US/docs/Web/API/Window/alert 
      */
-    private notifyPlayerEndGame = (winner: Identity) => {
+    private notifyPlayerEndGame = (winner: Identity): void => {
         // prevents the user from clicking on other squares once the game has ended
         this.isGameOver = true;
 
@@ -500,7 +500,7 @@ export default class Board extends React.Component<BoardProps> {
      * This is a helper method that returns the JSX needed to display the board.
      */
     @computed
-    private get renderBoard() {
+    private get renderBoard(): JSX.Element {
         const { dimensions } = this.props;
         const { pixelSideLength: length } = this;
         const isValid = dimensions > 2
@@ -560,7 +560,7 @@ export default class Board extends React.Component<BoardProps> {
      * This displays the small tile to the left of the board that
      * can be dropped onto a board square to make a move.
      */
-    private get renderDragTarget() {
+    private get renderDragTarget(): JSX.Element | null {
         const { startDrag, dragTargetX, dragTargetY, currentPlayer, squareSideLength, isGameOver, opacity } = this;
         if (isGameOver) {
             return (null);
@@ -606,7 +606,7 @@ export default class Board extends React.Component<BoardProps> {
      * https://reactjs.org/docs/introducing-jsx.html
      * https://reactjs.org/docs/rendering-elements.html 
      */
-    render() {
+    render(): JSX.Element {
         const { background } = this.props;
         const { height } = this;
         return (
