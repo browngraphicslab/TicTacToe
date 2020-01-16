@@ -169,6 +169,14 @@ export default class Board extends React.Component<BoardProps> {
         return this.elapsedMoves > 0;
     }
 
+    /**
+     * This @computed tag is another mobx state management feature.
+     * Whenever you use an accessor that returns a value based off of
+     * observables, mobx will cache or store the value, and when the accessor is called
+     * again, if none of the underlying observable values have changed, the stored
+     * value will be returned (avoiding needless re-computation).
+     * https://mobx.js.org/refguide/computed-decorator.html
+     */
     @computed
     private get squareSideLength() {
         const { dimensions } = this.props;
