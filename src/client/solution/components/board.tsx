@@ -318,9 +318,9 @@ export default class Board extends React.Component<BoardProps> {
          * a native drop event. So what do we do? If this HTML page were a cork board with paper squares on it, we basically
          * put a thumbtack in the board at the location where the pointer up event fired, and take a look at all the elements
          * (stacked in the Z direction) that intersect with the point at which this event occurs.
-         * Since the squares don't overlap, we just find the guaranteed one element then find the one that corresponds to the board
-         * square over which we dropped the dragger. Then, we can call out to it
-         * with a custom event (for which it's listening), which will cause the square to call
+         * Since the squares don't overlap, we just find the guaranteed one element that corresponds to the board
+         * square over which we dropped the dragger. Then, we can 'call out' to it by dispatching to it a
+         * a custom event (an event for which it's listening), which will cause the square to call
          * (as a prop, from its perspective) this boards handleMove() with its location. Pretty cool!
          */
         const [square] = document.elementsFromPoint(x, y).filter(element => element.className === "square");
