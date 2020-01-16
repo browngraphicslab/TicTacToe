@@ -1,5 +1,6 @@
 import * as React from "react";
 import "../style/square.scss";
+import "../style/shared.scss";
 import { observable, action } from "mobx";
 import { observer } from "mobx-react";
 import { Identity, Location, src, IdentityColors } from "../logic/utilities";
@@ -28,6 +29,7 @@ interface SquareProps {
 export default class Square extends React.Component<SquareProps> {
     @observable public identity: Identity = Identity.None;
     @observable private opacity = opacityValues.idle;
+    @observable private transition = "0.5s opacity ease";
 
     private get canPlay() {
         return this.identity === Identity.None && !this.props.isGameOver;
@@ -77,8 +79,8 @@ export default class Square extends React.Component<SquareProps> {
          * objects, it can be quite handy.
          * https://codeburst.io/es6-destructuring-the-complete-guide-7f842d08b98f 
          */
-        const { pixelSideLength: length, currentPlayer } = this.props;
-        const { opacity } = this;
+        const { pixelSideLength: length } = this.props;
+        const { opacity, transition } = this;
         /**
          * Now, we'll start hooking into event code in the JSX below!
          * https://reactjs.org/docs/handling-events.html 
@@ -87,8 +89,11 @@ export default class Square extends React.Component<SquareProps> {
             <div
                 // this is where we tell the square to listen to the custom event we throw in the parent
                 // component (in Board.tsx) when the drag target is dropped over a square
-                ref={e => e && e.addEventListener(dropEventName, this.makeMove)}
-                className={"square"}
+                ref={e => e && e.addEventListener(dropEventName, () => {
+                    this.transition = "none";
+                    this.makeMove();
+                })}
+                className={"square tile"}
                 // when this <div> is clicked, execute the following function
                 onClick={this.makeMove}
                 // this is just the unintuitive built-in name for onRightClick()
@@ -116,7 +121,8 @@ export default class Square extends React.Component<SquareProps> {
                     backgroundColor: IdentityColors.get(this.identity),
                     width: length,
                     height: length,
-                    opacity
+                    opacity,
+                    transition
                 }}
             >
                 {this.content}

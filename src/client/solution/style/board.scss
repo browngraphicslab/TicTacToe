@@ -3,15 +3,6 @@
 // note that the nesting structure does have meaning!
 // http://thesassway.com/beginner/the-inception-rule
 
-.passive {
-    /* Chrome/Safari */
-    -webkit-user-select: none;
-    /* Firefox */
-    -moz-user-select: none;
-    /* IE10+ */
-    -ms-user-select: none;
-}
-
 .board-container {
     text-align: center;
     display: flex;
@@ -42,23 +33,13 @@
 
     .drag-target {
         z-index: 1;
-        border-radius: 5px;
-        width: 70px;
-        height: 70px;
         align-self: center;
-        background: red;
         padding: 10px;
-        border: 2px solid white;
         margin-right: 50px;
-        display: flex;
-        justify-content: center;
-        box-shadow: 2px 2px 10px 0px black;
 
         .drag-hand {
             pointer-events: none;
             align-self: center;
-            width: 35px;
-            height: 35px;
         }
 
     }

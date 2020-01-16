@@ -3,6 +3,7 @@
  */
 import * as React from "react";
 import "../style/board.scss"; // import css directly like this
+import "../style/shared.scss";
 import { observer } from "mobx-react"; // this is how your import a module's standard export
 import Square from "./square"; // this is how you import a module's *default* export
 import { Identity, Location, src, IdentityColors } from "../logic/utilities";
@@ -131,7 +132,7 @@ export default class Board extends React.Component<BoardProps> {
         // with an n-dimensional board, builds an n by n matrix to model the state of the game board
         this.gameState = this.constructBoardLogic();
         // set up the functionality that keeps the board appropriately sized when window dimensions change
-        window.addEventListener("resize", this.computePixelSideLength);
+        window.addEventListener("resize", this.updateBoardSideLength);
 
         /**
          * Mobx reactions answer the question "Wouldn't it be nice to run some code every time (an) @observable value(s) change(s)"?
@@ -161,7 +162,7 @@ export default class Board extends React.Component<BoardProps> {
 
     componentDidMount() {
         // set the board to the appropriate initial size when the component first mounts
-        this.computePixelSideLength();
+        this.updateBoardSideLength();
     }
 
     componentWillUnmount() {
@@ -277,7 +278,7 @@ export default class Board extends React.Component<BoardProps> {
      * values of the individual squares in the grid. 
      */
     @action
-    private computePixelSideLength = () => {
+    private updateBoardSideLength = () => {
         const { current } = this.containerRef;
         if (current) {
             const { width, height } = current.getBoundingClientRect();
@@ -406,7 +407,7 @@ export default class Board extends React.Component<BoardProps> {
     private onPointerUp = ({ x, y }: PointerEvent) => {
         // determine, from all elements on screen that intersect with the event's point, which was a square
         // if this syntax looks weird, take a look at http://budiirawan.com/typescript-destructuring-array/
-        const [square] = document.elementsFromPoint(x, y).filter(element => element.className === "square");
+        const [square] = document.elementsFromPoint(x, y).filter(element => element.className.includes("square"));
         /**
          * This next line of code might seem like odd syntax as well, but it's a concise
          * way of writing 
@@ -559,14 +560,15 @@ export default class Board extends React.Component<BoardProps> {
      * can be dropped onto a board square to make a move.
      */
     private get renderDragTarget() {
-        const { startDrag, dragTargetX, dragTargetY, currentPlayer } = this;
-        if (this.isGameOver) {
+        const { startDrag, dragTargetX, dragTargetY, currentPlayer, squareSideLength, isGameOver, opacity } = this;
+        if (isGameOver) {
             return (null);
         }
+        const thumbSideLength = squareSideLength / 2;
         return (
             <div
                 onPointerDown={startDrag}
-                className={"drag-target"}
+                className={"drag-target tile"}
                 /**
                  * You can move and resize elements on screen (such as this one) without actually
                  * changing their literal x, y, width and height properties. Instead, you
@@ -577,12 +579,19 @@ export default class Board extends React.Component<BoardProps> {
                  */
                 style={{
                     transform: `translate(${dragTargetX}px, ${dragTargetY}px)`,
-                    backgroundColor: IdentityColors.get(currentPlayer)
+                    backgroundColor: IdentityColors.get(currentPlayer),
+                    width: squareSideLength,
+                    height: squareSideLength,
+                    opacity
                 }}
             >
                 <img
                     className={"drag-hand passive"}
                     src={src(`${currentPlayer}.png`)} // more string templating (string interpolation)
+                    style={{
+                        width: thumbSideLength,
+                        height: thumbSideLength
+                    }}
                 />
             </div>
         );
