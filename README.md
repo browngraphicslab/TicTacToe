@@ -29,7 +29,7 @@ After making your changes, you'll need to compile ([transpile](https://howtodoin
 ## How to Play
 
 X is given the first move, and the game will internally keep track of turns. Click on the desired square to move, or
-drag the hand icon and drop it on the desired square.
+drag the tile icon and drop it on the desired square.
 
 ## Extension Challenges
 
