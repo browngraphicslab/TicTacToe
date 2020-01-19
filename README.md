@@ -26,11 +26,6 @@ Run `npm run make` in the command line from the root folder of the project and g
 
 After making your changes, you'll need to compile ([transpile](https://howtodoinjava.com/typescript/transpiler-vs-compiler/)) your code and start the server. Run `npm run make` in the command line from the root folder of the project and go to http://localhost:1050/tic-tac-toe/stencil. 
 
-Once you're super familiar with those, you can
-consider exploring the rest of the code base. Note that a lot of the configuration
-files in the root directory are not important to know at this point, but if you have the time,
-you're encouraged to get to know them on your own or to ask one of the team leads.
-
 ## How to Play
 
 X is given the first move, and the game will internally keep track of turns. Click on the desired square to move, or
