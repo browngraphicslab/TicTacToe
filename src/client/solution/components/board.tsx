@@ -80,10 +80,10 @@ export const dropEventName = "dragTargetDropped";
 
 /**
  * All components that we work with should be marked @observer so that they can React to mobx's state management.
- * Even if components lack @observable instance variables, it it is considered good practice to mark them
- * as @observers since you might need to add @observable instance variables down the road. At this point, if your
- * component is not an observer and you expect it to be responsive to changes in @observables, it can seem like there
- * are serious issues with your code even if it's written correctly.
+ * Even if components lack @observable instance variables, it is considered good practice to mark them
+ * as @observers since you might need to add @observable instance variables down the road. If that happens, and if your
+ * component is not an observer though you expect it to be responsive to changes in @observables, it can seem like there
+ * are serious issues with your code even if it's otherwise written correctly.
  */
 @observer
 export default class Board extends React.Component<BoardProps> {
@@ -135,7 +135,8 @@ export default class Board extends React.Component<BoardProps> {
         window.addEventListener("resize", this.updateBoardSideLength);
 
         /**
-         * Mobx reactions answer the question "Wouldn't it be nice to run some code every time (an) @observable value(s) change(s)"?
+         * Mobx reactions answer the question "Wouldn't it be nice to run some code every time (an) @observable value(s) change(s)?"
+         * In other words, code is explicitly run as a reaction to changes in @observable values 
          * The syntax might look weird at first, but building a reaction just means writing two functions and passing them into the
          * imported reaction() function. The first, or data, function contains all the
          * *observable* 'triggers' you care about, and will return some value. The second function will take, as an input, that same value
@@ -177,7 +178,7 @@ export default class Board extends React.Component<BoardProps> {
 
     /**
      * This 'get' signature defines a TypeScript accessor. It's like an instance
-     * variable on steroids! It might look like a regular function, but you invoke it as this.hasGameStarted,
+     * variable on steroids! It might look like a regular function, but you invoke it as a property: this.hasGameStarted,
      * for example, NOT this.hasGameStarted().
      * https://www.typescriptlang.org/docs/handbook/classes.html#accessors 
      */
@@ -260,7 +261,7 @@ export default class Board extends React.Component<BoardProps> {
      * to keep track of the underlying board state.
      */
     private constructBoardLogic = (): Identity[][] => {
-        const outer = Array<Array<Identity>>();
+        const outer = Array<Array<Identity>>(); // equivalent to 'const outer: Identity[][] = [];'
         const { dimensions } = this.props;
         for (let row = 0; row < dimensions; row++) {
             outer.push(Array<Identity>(dimensions).fill(Identity.None));
@@ -396,13 +397,13 @@ export default class Board extends React.Component<BoardProps> {
     /**
      * Here, we have to get a little creative when handling the 'drop' of the dragTarget onto a given square.
      * Since our 'dragging' just consists of moving the transform and not some drag event, the squares won't receive
-     * a native drop event. So what do we do? If this HTML page were a cork board with paper squares on it, we basically
+     * a native drop event from the dragTarget. So what do we do? If this HTML page were a cork board with paper squares on it, we basically
      * put a thumbtack in the board at the location where the pointer up event fired, and take a look at all the elements
-     * (stacked in the Z direction) that intersect with the point at which this event occurs.
-     * Since the squares don't overlap, we just find the guaranteed one element that corresponds to the board
+     * (stacked in the Z direction) that were just punctured by our thumbtack.
+     * Since the squares won't ever overlap, we just find the guaranteed one element that corresponds to the board
      * square over which we dropped the dragger. Then, we can 'call out' to it by dispatching to it a
      * a custom event (an event for which it's listening), which will cause the square to call
-     * (as a prop, from its perspective) this boards handleMove() with its location. Pretty cool!
+     * (as a prop, from its perspective) this board's handleMove() with its location. Pretty cool!
      */
     @action
     private onPointerUp = ({ x, y }: PointerEvent): void => {
@@ -417,7 +418,7 @@ export default class Board extends React.Component<BoardProps> {
          *     square.dispatchEvent(...);
          * }
          * 
-         * In JavaScript and TypeScript, there's a concept of truthy and falsey values
+         * In JavaScript and TypeScript, there's a concept of truthy and falsy values
          * https://www.sitepoint.com/javascript-truthy-falsy/
          * For example, 0, null, undefined, "" (the empty string) and, of course, false, are all falsy, so
          * if you pass any of those into a conditional statement, the statement will return false.
@@ -513,7 +514,7 @@ export default class Board extends React.Component<BoardProps> {
         let board: JSX.Element[] = [<h1 className={"board-warning passive"}>Your board must be at least 3 by 3 squares...</h1>];
         if (isValid) {
             /**
-             * Otherwise, the board will become an dimensions by dimensions grid of squares
+             * Otherwise, the board will become a 'dimensions by dimensions' grid of squares
              */
             board = [];
             for (let row = 0; row < dimensions; row++) {
@@ -525,8 +526,8 @@ export default class Board extends React.Component<BoardProps> {
                          * still within the umbrella of the render method since that's the only place this is called, but it's
                          * a nice way to keep things clean and logically separated.
                          * 
-                         * You can see why having a reusable component is handy here: we can give Sqyare one customized information
-                         * as props, but beyond those differences each Square will behave and render itself identically.
+                         * You can see why having a reusable component is handy here: we can give a give Square some customized information
+                         * via its props, but beyond those differences each Square will behave and render itself identically.
                          */
                         <Square
                             /**
