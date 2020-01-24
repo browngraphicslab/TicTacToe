@@ -79,7 +79,7 @@ export default class Square extends React.Component<SquareProps> {
          * objects, it can be quite handy.
          * https://codeburst.io/es6-destructuring-the-complete-guide-7f842d08b98f 
          */
-        const { pixelSideLength: length } = this.props;
+        const { pixelSideLength: length } = this.props; // this is equivalent to 'const length = this.props.pixelSideLength'
         const { opacity, transition } = this;
         /**
          * Now, we'll start hooking into event code in the JSX below!
